@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asmit Mishra | Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="#home">AM</a>
+    <nav class="nav" id="nav-menu">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#projects">Projects</a>
+      <a href="#experience">Experience</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <button class="menu-btn" id="menu-btn" aria-label="Toggle menu">☰</button>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <p class="eyebrow">Hello, I'm</p>
+      <h1>Asmit Mishra</h1>
+      <h2>Web Developer & Creative Problem Solver</h2>
+      <p class="hero-copy">
+        I build responsive web experiences with clean UI, practical architecture, and a strong focus on performance.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#projects">View Work</a>
+        <a class="btn btn-secondary" href="https://www.linkedin.com/in/asmitxmishra?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <h3>About Me</h3>
+      <p>
+        I am a developer passionate about building user-focused websites and applications. I enjoy turning ideas into polished products through
+        thoughtful design, scalable code, and continuous learning.
+      </p>
+    </section>
+
+    <section class="section" id="skills">
+      <h3>Skills</h3>
+      <div class="chips" id="skills-list"></div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-head">
+        <h3>Projects</h3>
+        <span>Selected work</span>
+      </div>
+      <div class="grid" id="projects-list"></div>
+    </section>
+
+    <section class="section" id="experience">
+      <h3>Experience</h3>
+      <div class="timeline" id="experience-list"></div>
+    </section>
+
+    <section class="section" id="contact">
+      <h3>Contact</h3>
+      <p>Want to collaborate or discuss opportunities? Let's connect.</p>
+      <div class="contact-links">
+        <a href="mailto:asmit@example.com">asmit@example.com</a>
+        <a href="https://www.linkedin.com/in/asmitxmishra?utm_source=share_via&utm_content=profile&utm_medium=member_android" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© <span id="year"></span> Asmit Mishra. Built with HTML, CSS, and JavaScript.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
