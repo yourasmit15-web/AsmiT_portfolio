@@ -10,6 +10,22 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
+<style>
+@media (max-width: 900px){
+  .topbar{height:68px;padding:0 12px;justify-content:flex-start;pointer-events:none;background:rgba(5,5,5,.94)}
+  .topbar .menu-btn{display:grid;place-items:center;position:fixed;left:12px;top:12px;width:44px;height:44px;margin:0;z-index:210;pointer-events:auto}
+  .topbar .logo{display:none}
+  .desktop-nav{display:none}
+  .music-player{position:fixed!important;top:10px!important;right:10px!important;bottom:auto!important;left:auto!important;width:min(310px,calc(100vw - 68px));height:50px;padding:5px 7px;z-index:205;border:3px solid var(--yellow);border-radius:30px;box-shadow:4px 4px 0 #000;transform:none!important}
+  .music-player .track{min-width:0;overflow:hidden;white-space:nowrap}
+  .music-player .track b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9px}
+  .music-player button{flex:0 0 34px;width:34px;height:34px}
+  .music-player #info{display:none}
+}
+@media (min-width:901px){
+  .music-player{position:fixed!important;top:14px!important;right:18px!important;bottom:auto!important;left:auto!important;z-index:205}
+}
+</style>
 </head>
 <body>
 <div class="grain" aria-hidden="true"></div>
@@ -26,28 +42,9 @@
   <a class="menu-contact" href="mailto:asmitxmishra@gmail.com">CONTACT ME →</a>
 </div>
 <main>
-<section id="home" class="comic hero-section">
-  <div class="hero-rays"></div>
-  <div class="hero-copy reveal">
-    <span class="speech small">HEY!</span>
-    <p class="role-badge">● FULL-STACK DEVELOPER</p>
-    <h1>ASMIT<br><span>MISHRA</span></h1>
-    <p class="hero-tag">I build intelligent, scalable &amp;<br>impactful <b>digital solutions.</b></p>
-    <div class="hero-buttons"><a class="comic-btn dark" href="#projects">EXPLORE MY WORK →</a><a class="comic-btn light" href="assets/Asmit-Mishra-CV.pdf" download>DOWNLOAD CV ↓</a></div>
-    <div class="social-strip"><a href="https://github.com/yourasmit15-web" target="_blank" rel="noopener">GH</a><a href="https://www.linkedin.com/in/asmitxmishra" target="_blank" rel="noopener">in</a><a href="https://www.instagram.com/asmit_mishra18" target="_blank" rel="noopener">IG</a><a href="mailto:asmitxmishra@gmail.com">@</a></div>
-  </div>
-  <div class="hero-photo reveal">
-    <div class="doodle crown">♛</div><div class="doodle arrow">↗</div>
-    <div class="photo-disc"><img src="assets/asmit-hero.svg" alt="AsmiT Mishra comic portrait" fetchpriority="high"></div>
-    <div class="photo-caption">BASED IN<br><b>GONDA, INDIA</b></div>
-  </div>
-  <aside class="about-note reveal"><h2>ABOUT ME 👋</h2><p>Hey, glad you made it here!<br><b>I’m AsmiT Mishra</b>, a Full-Stack Developer &amp; AI Enthusiast from Gonda, Uttar Pradesh, India.</p><p>I love building web apps, exploring new technologies and solving real-world problems through code.</p><strong>BUILD • LEARN • SHIP • REPEAT</strong></aside>
-</section>
+<section id="home" class="comic hero-section"><div class="hero-rays"></div><div class="hero-copy reveal"><span class="speech small">HEY!</span><p class="role-badge">● FULL-STACK DEVELOPER</p><h1>ASMIT<br><span>MISHRA</span></h1><p class="hero-tag">I build intelligent, scalable &amp;<br>impactful <b>digital solutions.</b></p><div class="hero-buttons"><a class="comic-btn dark" href="#projects">EXPLORE MY WORK →</a><a class="comic-btn light" href="assets/Asmit-Mishra-CV.pdf" download>DOWNLOAD CV ↓</a></div><div class="social-strip"><a href="https://github.com/yourasmit15-web" target="_blank" rel="noopener">GH</a><a href="https://www.linkedin.com/in/asmitxmishra" target="_blank" rel="noopener">in</a><a href="https://www.instagram.com/asmit_mishra18" target="_blank" rel="noopener">IG</a><a href="mailto:asmitxmishra@gmail.com">@</a></div></div><div class="hero-photo reveal"><div class="doodle crown">♛</div><div class="doodle arrow">↗</div><div class="photo-disc"><img src="assets/asmit-hero.svg" alt="AsmiT Mishra comic portrait" fetchpriority="high"></div><div class="photo-caption">BASED IN<br><b>GONDA, INDIA</b></div></div><aside class="about-note reveal"><h2>ABOUT ME 👋</h2><p>Hey, glad you made it here!<br><b>I’m AsmiT Mishra</b>, a Full-Stack Developer &amp; AI Enthusiast from Gonda, Uttar Pradesh, India.</p><p>I love building web apps, exploring new technologies and solving real-world problems through code.</p><strong>BUILD • LEARN • SHIP • REPEAT</strong></aside></section>
 <div class="marquee"><div>★ BUILD　•　LEARN　•　SHIP　•　REPEAT　★　BUILD　•　LEARN　•　SHIP　•　REPEAT　★　BUILD　•　LEARN　•　SHIP　•　REPEAT　</div></div>
-<section id="about" class="comic blue-section section-pad">
-  <div class="section-title"><span>ABOUT</span><h2>WHO IS ASMIT?</h2></div>
-  <div class="about-layout"><div class="about-polaroid reveal"><div class="tape"></div><img src="assets/asmit-about.svg" alt="AsmiT Mishra comic about portrait"></div><div class="about-copy reveal"><p class="big-copy">Curious by nature. Builder by choice.</p><p>I learn by building, breaking, fixing and experimenting. Give me a new technology, a strange bug or an interesting idea and I’ll happily disappear down the rabbit hole.</p><p>My focus is full-stack web development, AI/ML and products that solve real problems.</p><p>Outside code: music, series, exploring places and collecting new ideas.</p><div class="fact-row"><span><b>5+</b> PROJECTS</span><span><b>2+</b> YEARS LEARNING</span><span><b>AI/ML</b> INTEREST</span></div></div></div>
-</section>
+<section id="about" class="comic blue-section section-pad"><div class="section-title"><span>ABOUT</span><h2>WHO IS ASMIT?</h2></div><div class="about-layout"><div class="about-polaroid reveal"><div class="tape"></div><img src="assets/asmit-about.svg" alt="AsmiT Mishra comic about portrait"></div><div class="about-copy reveal"><p class="big-copy">Curious by nature. Builder by choice.</p><p>I learn by building, breaking, fixing and experimenting. Give me a new technology, a strange bug or an interesting idea and I’ll happily disappear down the rabbit hole.</p><p>My focus is full-stack web development, AI/ML and products that solve real problems.</p><p>Outside code: music, series, exploring places and collecting new ideas.</p><div class="fact-row"><span><b>5+</b> PROJECTS</span><span><b>2+</b> YEARS LEARNING</span><span><b>AI/ML</b> INTEREST</span></div></div></div></section>
 <section id="skills" class="comic purple-section section-pad"><div class="section-title light-title"><span>SKILLS</span><h2>MY TOOLBOX</h2></div><div class="skills-wall"><div class="skill-group reveal"><h3>LANGUAGES</h3><div><b>JS</b><b>TS</b><b>PY</b><b>HTML</b><b>CSS</b></div></div><div class="skill-group reveal"><h3>WEB DEVELOPMENT</h3><div><b>React</b><b>Next.js</b><b>Node</b><b>Tailwind</b></div></div><div class="skill-group reveal"><h3>DATABASES</h3><div><b>MongoDB</b><b>PostgreSQL</b></div></div><div class="skill-group reveal"><h3>TOOLS</h3><div><b>Git</b><b>GitHub</b><b>VS Code</b><b>Figma</b></div></div><div class="skill-group reveal"><h3>AI / ML</h3><div><b>OpenAI</b><b>RAG</b><b>Automation</b></div></div></div></section>
 <section id="projects" class="comic projects-section section-pad"><div class="section-title"><span>PROJECTS</span><h2>THINGS I’VE BUILT</h2></div><div class="project-filters"><button class="active" data-filter="all">ALL</button><button data-filter="web">WEB APPS</button><button data-filter="ai">AI / ML</button></div><div class="project-grid"><article class="project-card reveal" data-type="ai"><div class="project-art purple-art">R</div><div class="project-body"><small>AI / WEB APP</small><h3>RAGHUVIR</h3><p>Smart AI-powered assistant for productivity, research and automation.</p><div class="tags">Next.js · AI · TypeScript</div><a href="https://github.com/yourasmit15-web/jarvis-ai-assistant" target="_blank" rel="noopener">VIEW PROJECT →</a></div></article><article class="project-card reveal" data-type="web"><div class="project-art pink-art">♪</div><div class="project-body"><small>WEB APP</small><h3>DHUN</h3><p>Music platform to discover, listen and manage favorite tracks — no subscription.</p><div class="tags">React · Node.js · MongoDB</div><a href="https://github.com/yourasmit15-web/DHUN" target="_blank" rel="noopener">VIEW PROJECT →</a></div></article><article class="project-card reveal" data-type="web"><div class="project-art blue-art">T</div><div class="project-body"><small>WEB APP</small><h3>TROVE</h3><p>Modern digital library and resource management platform.</p><div class="tags">Next.js · TypeScript · MongoDB</div><a href="https://github.com/yourasmit15-web/TROVE" target="_blank" rel="noopener">VIEW PROJECT →</a></div></article></div></section>
 <section id="education" class="comic orange-section section-pad education-section"><div class="section-title"><span>EDUCATION</span><h2>LEARNING JOURNEY</h2></div><div class="timeline"><article class="edu-card reveal"><b class="year">2023 — 2026</b><h3>NITTE MEENAKSHI INSTITUTE OF TECHNOLOGY</h3><p>B.E. / Bachelor’s program in Computer Science &amp; related engineering studies.</p></article><article class="edu-card reveal"><b class="year">2023 — 2025</b><h3>IIT MADRAS</h3><p>Diploma / programming &amp; data science coursework — online.</p></article><article class="edu-card reveal"><b class="year">2020 — 2022</b><h3>ST. ALOYSIUS COLLEGE</h3><p>Pre-University / higher secondary studies.</p></article><article class="edu-card reveal"><b class="year">2010 — 2020</b><h3>ADITYA BIRLA PUBLIC SCHOOL</h3><p>Secondary school education.</p></article></div><div class="comic-character">🤔</div></section>
