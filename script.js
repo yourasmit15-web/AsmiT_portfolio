@@ -1,25 +1,19 @@
 document.addEventListener('DOMContentLoaded',()=>{
  const reveals=document.querySelectorAll('.reveal');
- const revealAll=()=>reveals.forEach((el,i)=>{el.style.transitionDelay=`${Math.min(i*55,300)}ms`;el.classList.add('visible')});
- if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');io.unobserve(e.target)}}),{threshold:.1});reveals.forEach(e=>io.observe(e))}else revealAll();
+ const show=e=>e.classList.add('visible');
+ if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){show(e.target);io.unobserve(e.target)}}),{threshold:.08});reveals.forEach(e=>io.observe(e));}else reveals.forEach(show);
  const menu=document.querySelector('.menu-btn'),panel=document.querySelector('.mobile-menu'),close=document.querySelector('.close-menu');
- const setMenu=open=>{panel?.classList.toggle('open',open);panel?.setAttribute('aria-hidden',String(!open));menu?.setAttribute('aria-expanded',String(open));document.body.classList.toggle('menu-open',open)};
- menu?.addEventListener('click',()=>setMenu(true));close?.addEventListener('click',()=>setMenu(false));panel?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));
- document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
- const links=[...document.querySelectorAll('.desktop-nav a')];const sections=[...document.querySelectorAll('main section[id]')];
+ const setMenu=open=>{panel?.classList.toggle('open',open);panel?.setAttribute('aria-hidden',String(!open));menu?.setAttribute('aria-expanded',String(open));document.body.style.overflow=open?'hidden':''};
+ menu?.addEventListener('click',()=>setMenu(true));close?.addEventListener('click',()=>setMenu(false));panel?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+ const links=[...document.querySelectorAll('.desktop-nav a')],sections=[...document.querySelectorAll('main section[id]')];
  const active=()=>{let current='home';sections.forEach(s=>{if(scrollY+180>=s.offsetTop)current=s.id});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${current}`))};addEventListener('scroll',active,{passive:true});active();
  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}));
- document.querySelectorAll('.project-filters button').forEach(btn=>btn.addEventListener('click',()=>{document.querySelectorAll('.project-filters button').forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{card.style.display=f==='all'||card.dataset.type===f?'block':'none'})}));
- // Original lightweight synth soundtrack: no external copyrighted audio or third-party hotlink required.
+ const filterButtons=document.querySelectorAll('.filters button,.project-filters button');
+ filterButtons.forEach(btn=>btn.addEventListener('click',()=>{filterButtons.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{card.style.display=f==='all'||card.dataset.type===f?'grid':'none'})}));
  const play=document.querySelector('#play'),prev=document.querySelector('#prev'),next=document.querySelector('#next'),name=document.querySelector('#trackName');
- const tracks=['DHUN • BAR PAR (ORIGINAL PORTFOLIO MIX)','DHUN • BUILD • LEARN • SHIP','ASMIT • CODING MODE'];let idx=0,playing=false,audioCtx=null,master=null,timer=null,step=0;
+ const tracks=['DHUN • BAR PAR (KALAAKAAR)','DHUN • BUILD • LEARN • SHIP','ASMIT • CODING MODE'];let idx=0,playing=false,audioCtx=null,master=null,timer=null,step=0;
  const melody=[[261.63,329.63,392],[293.66,349.23,440],[329.63,392,493.88],[392,493.88,587],[349.23,440,523.25],[329.63,392,493.88],[293.66,349.23,440],[261.63,329.63,392]];
- const startAudio=()=>{if(!audioCtx){audioCtx=new (window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.045;master.connect(audioCtx.destination)} if(audioCtx.state==='suspended')audioCtx.resume();if(timer)return;step=0;const tick=()=>{if(!playing)return;const now=audioCtx.currentTime;const chord=melody[step%melody.length];chord.forEach((freq,j)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=j===0?'triangle':'sine';o.frequency.value=freq*(idx===1?1.002:1);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(j===0?.055:.025,now+.025);g.gain.exponentialRampToValueAtTime(.0001,now+.48);o.connect(g).connect(master);o.start(now);o.stop(now+.5)});step++;timer=setTimeout(()=>{timer=null;tick()},500)};tick()};
- const stopAudio=()=>{if(timer){clearTimeout(timer);timer=null}playing=false};
- const render=()=>{if(name)name.textContent=tracks[idx];if(play)play.textContent=playing?'Ⅱ':'▶';play?.setAttribute('aria-label',playing?'Pause music':'Play music')};
- play?.addEventListener('click',()=>{playing=!playing;if(playing)startAudio();else stopAudio();render()});
- next?.addEventListener('click',()=>{idx=(idx+1)%tracks.length;playing=true;startAudio();render()});
- prev?.addEventListener('click',()=>{idx=(idx-1+tracks.length)%tracks.length;playing=true;startAudio();render()});
- document.querySelector('#info')?.addEventListener('click',()=>alert('Original AsmiT portfolio soundtrack. Tap ▶ to play or Ⅱ to pause.'));
- document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){stopAudio();render()}});render();
+ const startAudio=()=>{if(!audioCtx){audioCtx=new(window.AudioContext||window.webkitAudioContext)();master=audioCtx.createGain();master.gain.value=.045;master.connect(audioCtx.destination)}if(audioCtx.state==='suspended')audioCtx.resume();if(timer)return;step=0;const tick=()=>{if(!playing)return;const now=audioCtx.currentTime,chord=melody[step%melody.length];chord.forEach((freq,j)=>{const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.type=j===0?'triangle':'sine';o.frequency.value=freq*(idx===1?1.002:1);g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(j===0?.055:.025,now+.025);g.gain.exponentialRampToValueAtTime(.0001,now+.48);o.connect(g).connect(master);o.start(now);o.stop(now+.5)});step++;timer=setTimeout(()=>{timer=null;tick()},500)};tick()};
+ const stopAudio=()=>{if(timer){clearTimeout(timer);timer=null}playing=false};const render=()=>{if(name)name.textContent=tracks[idx];if(play)play.textContent=playing?'Ⅱ':'▶'};
+ play?.addEventListener('click',()=>{playing=!playing;if(playing)startAudio();else stopAudio();render()});next?.addEventListener('click',()=>{idx=(idx+1)%tracks.length;playing=true;startAudio();render()});prev?.addEventListener('click',()=>{idx=(idx-1+tracks.length)%tracks.length;playing=true;startAudio();render()});document.querySelector('#info')?.addEventListener('click',()=>alert('Original AsmiT portfolio soundtrack. Tap ▶ to play or Ⅱ to pause.'));document.addEventListener('visibilitychange',()=>{if(document.hidden&&playing){stopAudio();render()}});render();
 });
