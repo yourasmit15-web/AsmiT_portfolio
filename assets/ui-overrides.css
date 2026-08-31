@@ -1,0 +1,14 @@
+/* Portfolio UI positioning overrides */
+@media (max-width:760px){
+.topbar{background:transparent;border:0;backdrop-filter:none;box-shadow:none;pointer-events:none;z-index:300}
+.menu-btn{display:grid;place-items:center;left:10px;top:9px;width:43px;height:43px;pointer-events:auto;background:#ffb31b;color:#080808;border:2px solid #080808;box-shadow:0 4px 0 #080808;font-size:0}
+.menu-btn::before{content:'☰';font-size:20px;line-height:1}
+.brand{display:none!important}
+.music-player{position:fixed;top:9px;right:10px;left:auto;width:auto;max-width:calc(100vw - 70px);height:44px;padding:4px 6px;z-index:310;border:2px solid #ffb31b;border-radius:24px;background:#111;box-shadow:0 4px 0 rgba(0,0,0,.45)}
+.music-player button{width:32px;height:32px;flex:0 0 32px}
+.music-player .track{min-width:0;max-width:145px;overflow:hidden}
+.music-player .track b{font-size:8px}
+.mobile-menu{z-index:400}
+.close-menu{top:12px;left:12px;background:#ffb31b;color:#080808;border-color:#080808}
+}
+@media (min-width:761px){.music-player{top:12px;right:18px}}
