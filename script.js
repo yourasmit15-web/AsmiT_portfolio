@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded',()=>{
+ const ui=document.createElement('link');ui.rel='stylesheet';ui.href='assets/ui-overrides.css';document.head.appendChild(ui);
  const reveals=document.querySelectorAll('.reveal');
  const show=e=>e.classList.add('visible');
  if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){show(e.target);io.unobserve(e.target)}}),{threshold:.08});reveals.forEach(e=>io.observe(e));}else reveals.forEach(show);
