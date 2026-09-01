@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded',()=>{
- const ui=document.createElement('link');ui.rel='stylesheet';ui.href='assets/ui-overrides.css';document.head.appendChild(ui);
  const reveals=document.querySelectorAll('.reveal');
  const show=e=>e.classList.add('visible');
  if('IntersectionObserver' in window){const io=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){show(e.target);io.unobserve(e.target)}}),{threshold:.08});reveals.forEach(e=>io.observe(e));}else reveals.forEach(show);
@@ -9,8 +8,8 @@ document.addEventListener('DOMContentLoaded',()=>{
  const links=[...document.querySelectorAll('.desktop-nav a')],sections=[...document.querySelectorAll('main section[id]')];
  const active=()=>{let current='home';sections.forEach(s=>{if(scrollY+180>=s.offsetTop)current=s.id});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${current}`))};addEventListener('scroll',active,{passive:true});active();
  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}));
- const filterButtons=document.querySelectorAll('.filters button,.project-filters button');
- filterButtons.forEach(btn=>btn.addEventListener('click',()=>{filterButtons.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{card.style.display=f==='all'||card.dataset.type===f?'grid':'none'})}));
+ const filterButtons=document.querySelectorAll('.filters button');
+ filterButtons.forEach(btn=>btn.addEventListener('click',()=>{filterButtons.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{card.style.display=f==='all'||card.dataset.type===f?'block':'none'})}));
  const play=document.querySelector('#play'),prev=document.querySelector('#prev'),next=document.querySelector('#next'),name=document.querySelector('#trackName');
  const tracks=['DHUN • BAR PAR (KALAAKAAR)','DHUN • BUILD • LEARN • SHIP','ASMIT • CODING MODE'];let idx=0,playing=false,audioCtx=null,master=null,timer=null,step=0;
  const melody=[[261.63,329.63,392],[293.66,349.23,440],[329.63,392,493.88],[392,493.88,587],[349.23,440,523.25],[329.63,392,493.88],[293.66,349.23,440],[261.63,329.63,392]];
