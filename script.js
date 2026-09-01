@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded',()=>{
  const menu=document.querySelector('.menu-btn'),panel=document.querySelector('.mobile-menu'),close=document.querySelector('.close-menu');
  const setMenu=open=>{panel?.classList.toggle('open',open);panel?.setAttribute('aria-hidden',String(!open));menu?.setAttribute('aria-expanded',String(open));document.body.style.overflow=open?'hidden':''};
  menu?.addEventListener('click',()=>setMenu(true));close?.addEventListener('click',()=>setMenu(false));panel?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>setMenu(false)));document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+ // Reference-style top corners: hamburger/menu stays at top-left, music stays at top-right, and the name is removed from the menu area.
+ if(menu){Object.assign(menu.style,{display:'grid',position:'fixed',left:'10px',right:'auto',top:'10px',zIndex:'700'});menu.setAttribute('aria-label','Open menu');}
+ const brand=document.querySelector('.brand');if(brand)brand.style.display='none';
+ const music=document.querySelector('.music-player');if(music)Object.assign(music.style,{position:'fixed',right:'10px',left:'auto',top:'10px',bottom:'auto',zIndex:'690'});
  const links=[...document.querySelectorAll('.desktop-nav a')],sections=[...document.querySelectorAll('main section[id]')];
  const active=()=>{let current='home';sections.forEach(s=>{if(scrollY+180>=s.offsetTop)current=s.id});links.forEach(a=>a.classList.toggle('active',a.getAttribute('href')===`#${current}`))};addEventListener('scroll',active,{passive:true});active();
  document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',e=>{const t=document.querySelector(a.getAttribute('href'));if(t){e.preventDefault();t.scrollIntoView({behavior:'smooth',block:'start'})}}));
