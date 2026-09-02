@@ -1,110 +1,57 @@
 import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js';
 
-const root=document.querySelector('#scene');
-const canvas=document.createElement('canvas'); canvas.className='game-canvas'; root.appendChild(canvas);
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true});
-renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.setSize(innerWidth,innerHeight); renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap; renderer.outputColorSpace=THREE.SRGBColorSpace;
-const scene=new THREE.Scene(); scene.background=new THREE.Color(0x06090d); scene.fog=new THREE.Fog(0x06090d,24,68);
-const camera=new THREE.PerspectiveCamera(72,innerWidth/innerHeight,.05,100); camera.position.set(0,1.72,18.2);
-const clock=new THREE.Clock(); const keys={}; const touch={up:0,down:0,left:0,right:0}; const walls=[]; const doors=[]; const triggers=[];
-let started=false,locked=false,autoTour=false,tourIndex=0,tourClock=0,yaw=0,pitch=0,openRoom=null;
-
-const material=(color,rough=.72,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
-const M={ground:material(0x17211d),road:material(0x292d2d),wall:material(0x77746b),wall2:material(0x4d514d),floor:material(0x242825),wood:material(0x604633),dark:material(0x11161a),glass:material(0x5e94a7,.12,.4),gold:material(0xd2b46d,.28,.55),green:material(0x294736),blue:material(0x304b5c),cream:material(0xd9d0bb),roof:material(0x1a2021),brick:material(0x75443a)};
-
-function box(name,x,y,z,w,h,d,mat,collide=false){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),mat);o.name=name;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);if(collide)walls.push({x,z,w,d});return o;}
-function sphere(name,x,y,z,r,mat){const o=new THREE.Mesh(new THREE.SphereGeometry(r,16,12),mat);o.name=name;o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;scene.add(o);return o;}
-function label(text,x,y,z,size=.2){const c=document.createElement('canvas');c.width=900;c.height=220;const g=c.getContext('2d');g.clearRect(0,0,900,220);g.fillStyle='#f1eee4';g.font='800 68px Manrope,Arial';g.textAlign='center';g.textBaseline='middle';g.fillText(text,450,110);const t=new THREE.CanvasTexture(c);t.colorSpace=THREE.SRGBColorSpace;const s=new THREE.Sprite(new THREE.SpriteMaterial({map:t,transparent:true,depthWrite:false}));s.position.set(x,y,z);s.scale.set(size*4.4,size,1);scene.add(s);return s;}
-function light(x,z,power=2.2,color=0xffc778){const l=new THREE.PointLight(color,power,9);l.position.set(x,2.85,z);l.castShadow=true;scene.add(l);box('lamp',x,3.03,z,.18,.12,.18,M.gold);}
-function wall(x,z,w,d,mat=M.wall,collide=true){return box('wall',x,1.55,z,w,3.1,d,mat,collide);}
-function door(x,z,name){const group=new THREE.Group();group.position.set(x,1.5,z);scene.add(group);const slab=new THREE.Mesh(new THREE.BoxGeometry(2.05,3,.18),M.wood);slab.position.x=-1.025;slab.castShadow=true;group.add(slab);doors.push({group,name,open:0});return group;}
-function windowUnit(x,z){box('window',x,1.95,z,2.2,1.35,.09,M.glass);box('frame',x-1.1,1.95,z-.06,.07,1.5,.12,M.wood);box('frame',x+1.1,1.95,z-.06,.07,1.5,.12,M.wood);box('frame',x,1.95,z-.06,2.2,.07,.12,M.wood);box('frame',x,1.95,z-.06,.07,1.35,.12,M.wood);}
-
-function room(info){
- const {name,cx,cz,w,d,side,type,index}=info;
- box(name+' floor',cx,.04,cz,w,.1,d,M.floor);
- wall(cx,cz+d/2,w,.18); wall(side==='L'?cx-w/2:cx+w/2,cz,.18,d);
- const ix=side==='L'?cx+w/2:cx-w/2, gap=2.3;
- wall(ix,cz-d/2+(d-gap)/4,.18,(d-gap)/2); wall(ix,cz+d/2-(d-gap)/4,.18,(d-gap)/2);
- door(ix,cz,name);
- light(cx,cz,2.5);
- label(name,cx,2.65,cz,.18);
- triggers.push({name,x:ix+(side==='L'?.9:-.9),z:cz,index});
- if(type==='about'){
-   box('desk',cx,.7,cz+1,3,.18,1.05,M.wood);box('screen',cx,1.45,cz+.63,1.65,.85,.1,M.dark);box('chair',cx,.65,cz+2.05,.85,.9,.85,M.blue);
-   box('portrait-frame',cx,2.05,cz-1.72,2.1,2.5,.12,M.gold); const p=box('portrait',cx,2.05,cz-1.79,1.75,2.15,.04,M.dark); label('AM',cx,2.05,cz-1.83,.42);
- }
- if(type==='skills'){
-   for(let i=0;i<6;i++){box('skill-rack',cx-2.2+i*.88,1.1,cz+1.6,.62,2.05,.5,i%2?M.blue:M.green);}
-   box('terminal',cx,.75,cz-1.15,3.4,.18,1.1,M.wood);for(let i=-1;i<=1;i++)box('monitor',cx+i*1.05,1.55,cz-1.58,.75,.58,.08,M.dark);
- }
- if(type==='projects'){
-   box('project-table',cx,.7,cz-1.15,3.7,.2,1.2,M.wood);for(let i=0;i<5;i++){box('project-display',cx-2.1+i*1.05,1.15,cz+1.45,.75,1.9,.38,i%2?M.blue:M.green);label(String(i+1).padStart(2,'0'),cx-2.1+i*1.05,1.2,cz+1.22,.12);}
- }
- if(type==='education'){
-   for(let i=0;i<3;i++)box('bookcase',cx-1.55+i*1.55,1.35,cz+1.45,1.05,2.4,.5,M.wood);box('study',cx,.7,cz-1.05,3,.18,1,M.wood);label('LEARN',cx,2.5,cz-1.5,.15);
- }
- if(type==='experience'){
-   box('dev-bench',cx,.7,cz,4,.2,1.1,M.wood);for(let i=-1;i<=1;i++){box('screen',cx+i*1.3,1.55,cz-.5,1.05,.7,.08,M.dark);light(cx+i*1.3,cz-.55,1.1,0xa8c9ff);}label('SHIP',cx,2.55,cz-1.55,.16);
- }
- if(type==='contact'){
-   box('meeting-table',cx,.62,cz,3.7,.18,1.55,M.wood);for(const dx of [-1.9,1.9])box('chair',cx+dx,.65,cz,.8,.9,.8,M.blue);label('LET’S BUILD',cx,2.5,cz-1.35,.16);
- }
-}
-
-const rooms=[
- {name:'ABOUT',cx:-5.5,cz:6,w:6.6,d:6,side:'L',type:'about',index:'01'},
- {name:'SKILLS',cx:5.5,cz:6,w:6.6,d:6,side:'R',type:'skills',index:'02'},
- {name:'PROJECTS',cx:-5.5,cz:-1,w:6.6,d:7,side:'L',type:'projects',index:'03'},
- {name:'EDUCATION',cx:5.5,cz:-1,w:6.6,d:7,side:'R',type:'education',index:'04'},
- {name:'EXPERIENCE',cx:-5.5,cz:-8.4,w:6.6,d:6,side:'L',type:'experience',index:'05'},
- {name:'CONTACT',cx:5.5,cz:-8.4,w:6.6,d:6,side:'R',type:'contact',index:'06'}
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const projects=[
+ {id:'01',name:'TROVE',type:'WEB APP',desc:'A modern product experience focused on discovering, organizing and exploring digital resources.',stack:['JavaScript','UI','APIs'],url:'https://github.com/yourasmit15-web/TROVE',status:'BUILD'},
+ {id:'02',name:'DHUN',type:'WEB APP',desc:'A music-focused web experience designed around discovery and playing without a subscription layer.',stack:['Web','UI','Media'],url:'https://github.com/yourasmit15-web/TROVE',status:'EXPERIMENT'},
+ {id:'03',name:'REALSENSE',type:'BROWSER EXTENSION',desc:'Turns real user interactions into actionable runtime insights to help developers understand what went wrong and why.',stack:['JavaScript','Browser APIs','UX'],url:'https://github.com/yourasmit15-web',status:'BUILD'},
+ {id:'04',name:'JARVIS AI ASSISTANT',type:'AI / ASSISTANT',desc:'An AI assistant concept exploring natural-language interaction, useful actions and developer-oriented automation.',stack:['AI','Python','APIs'],url:'https://github.com/yourasmit15-web',status:'EXPERIMENT'},
+ {id:'05',name:'YOUTUBE TRIMMER',type:'WEB TOOL',desc:'A focused utility for trimming video content into precise clips worth keeping.',stack:['JavaScript','Video','Web'],url:'https://github.com/yourasmit15-web',status:'BUILD'},
+ {id:'06',name:'MEDINFOAI',type:'AI / ML',desc:'An AI product concept for turning medicine information into a more accessible digital experience.',stack:['AI','ML','Web'],url:'https://github.com/yourasmit15-web',status:'EXPERIMENT'}
 ];
-rooms.forEach(room);
+const skills=[['01','HTML','DEVELOPMENT'],['02','CSS','DEVELOPMENT'],['03','JAVASCRIPT','DEVELOPMENT'],['04','REACT','DEVELOPMENT'],['05','NODE.JS','DEVELOPMENT'],['06','PYTHON','AI & DATA'],['07','MACHINE LEARNING','AI & DATA'],['08','SQL','AI & DATA'],['09','APIs','DEVELOPMENT'],['10','GIT','TOOLS'],['11','GITHUB','TOOLS'],['12','LINUX','INFRASTRUCTURE'],['13','UI / UX','CREATIVE'],['14','GENERATIVE AI','AI & DATA'],['15','FIREBASE','INFRASTRUCTURE']];
 
-box('ground',0,-.3,0,54,.5,54,M.ground);box('driveway',0,-.06,16,9,.12,12,M.road);box('hall-floor',0,.02,-.1,4.2,.1,23,M.floor);box('lobby-floor',0,.03,10.2,4.2,.1,4.2,M.floor);
-wall(-3.2,11.2,2.1,.18,M.wall2);wall(3.2,11.2,2.1,.18,M.wall2);door(0,11,'ENTRANCE');box('porch',0,.05,13,9,.18,4,M.wood);
-for(let z=15;z>=12;z--)box('front-step',0,(15-z)*.14,z,9,.2,.62,M.cream);windowUnit(-2.25,10.95);windowUnit(2.25,10.95);label('ASMIT HOUSE',0,3.35,10.8,.22);
-box('roof',0,3.45,0,20,.35,24,M.roof);box('ridge',0,3.88,0,20,.28,1,M.brick);box('chimney',7,4.15,-4,1.2,2.1,1.2,M.wall2);
+const wall=$('#skillWall');skills.forEach(([n,name,cat])=>{const e=document.createElement('div');e.className='skill';e.dataset.cat=cat;e.innerHTML=`<span class="num">${n}</span><b>${name}</b><small>${cat}</small>`;wall.appendChild(e)});
 
-for(let i=0;i<26;i++){const x=-23+Math.random()*46,z=-19+Math.random()*37;if(Math.abs(x)<12&&Math.abs(z)<16)continue;const trunk=sphere('tree-trunk',x,1,z,.25,M.wood);trunk.scale.y=4; sphere('tree-crown',x,2.65,z,1.25+Math.random()*.65,M.green);}
-for(const x of [-3.5,0,3.5])light(x,12.25,1.2);
-scene.add(new THREE.HemisphereLight(0xb7cad8,0x10150f,1.3));
-const moon=new THREE.DirectionalLight(0xd8e6ff,2.4);moon.position.set(-14,18,10);moon.castShadow=true;moon.shadow.mapSize.set(2048,2048);moon.shadow.camera.left=-26;moon.shadow.camera.right=26;moon.shadow.camera.top=26;moon.shadow.camera.bottom=-26;scene.add(moon);
-const stars=new THREE.Group();for(let i=0;i<120;i++){const s=sphere('star',-35+Math.random()*70,8+Math.random()*18,-28+Math.random()*20,.025,M.cream);stars.add(s);}scene.add(stars);
-
-const data={
- ABOUT:{kicker:'THE BUILDER',text:'I am AsmiT Mishra — a Full-Stack Developer and AI enthusiast. I learn by building useful products, shipping them, and iterating until the experience feels right.',stats:[['FOCUS','FULL-STACK × AI'],['MINDSET','BUILD · SHIP · LEARN'],['STYLE','PRODUCT ENGINEERING']],actions:[]},
- SKILLS:{kicker:'LOADOUT',text:'A practical stack for taking an idea from interface to backend and AI-powered behavior.',stats:[['LANGUAGES','JavaScript · TypeScript · Python'],['FRONTEND','React · Next.js'],['BACKEND','Node.js · APIs'],['DATA','MongoDB · PostgreSQL · Firebase'],['AI','Generative AI · Automation'],['TOOLING','Git · GitHub']],actions:[]},
- PROJECTS:{kicker:'WORKSHOP',text:'Selected builds that show how I think: real interfaces, useful utilities, AI experiments and products designed to be explored.',stats:[['01','JARVIS AI ASSISTANT'],['02','TROVE · MUSIC DISCOVERY'],['03','REALSENSE · WEB EXPERIENCE'],['04','YOUTUBE TRIMMER'],['05','MEDINFOAI · AI PRODUCT']],actions:[['GitHub','https://github.com/yourasmit15-web'],['TROVE REPO','https://github.com/yourasmit15-web/TROVE']]},
- EDUCATION:{kicker:'FOUNDATION',text:'Formal study is the base layer. The real learning loop is turning concepts into software and then improving what ships.',stats:[['DEGREE','BCA · 2024–2027'],['INSTITUTE','Meena Shah Institute of Technology and Management'],['12TH','PCM · 2022–2024'],['10TH','Science · 84.5%']],actions:[]},
- EXPERIENCE:{kicker:'SHIP LOG',text:'Full-Stack Developer Intern at Hivens (Just Inc.) in 2026 — working across web interfaces, features, debugging, UX and deployment.',stats:[['ROLE','FULL-STACK DEVELOPER INTERN'],['COMPANY','HIVENS (JUST INC.)'],['YEAR','2026'],['APPROACH','RELIABLE EXPERIENCES']],actions:[]},
- CONTACT:{kicker:'OPEN CHANNEL',text:'Have an idea, collaboration or opportunity? Open a channel and let’s build something worth opening.',stats:[['EMAIL','yourasmit108@gmail.com'],['GITHUB','yourasmit15-web'],['LINKEDIN','asmitxmishra'],['INSTAGRAM','@asmitx.dev']],actions:[['EMAIL','mailto:yourasmit108@gmail.com'],['GITHUB','https://github.com/yourasmit15-web'],['LINKEDIN','https://www.linkedin.com/in/asmitxmishra'],['INSTAGRAM','https://www.instagram.com/asmitx.dev/']]}
-};
-
-function openRoom(name){const d=data[name];if(!d)return;openRoom=name;const panel=document.querySelector('#panel');panel.classList.add('show');panel.setAttribute('aria-hidden','false');document.querySelector('#panelIndex').textContent='ROOM '+(rooms.find(r=>r.name===name)?.index||'01');document.querySelector('#panelKicker').textContent=d.kicker;document.querySelector('#panelTitle').textContent=name;document.querySelector('#panelText').textContent=d.text;const grid=document.querySelector('#panelGrid');grid.innerHTML='';(d.stats||[]).forEach(([a,b])=>{const el=document.createElement('div');el.className='stat';el.innerHTML='<b>'+a+'</b><small>'+b+'</small>';grid.appendChild(el)});const actions=document.querySelector('#panelActions');actions.innerHTML='';(d.actions||[]).forEach(([a,u])=>{const link=document.createElement('a');link.href=u;link.target=u.startsWith('mailto:')?'_self':'_blank';link.rel='noreferrer';link.textContent=a+' ↗';actions.appendChild(link)});document.querySelector('#area').textContent=name+' ROOM';document.querySelector('#toast').classList.remove('show');if(document.pointerLockElement===canvas)document.exitPointerLock();}
-function closeRoom(){openRoom=null;document.querySelector('#panel').classList.remove('show');document.querySelector('#panel').setAttribute('aria-hidden','true');document.querySelector('#area').textContent='HOUSE';if(started&&!autoTour)canvas.requestPointerLock?.();}
-function start(){started=true;autoTour=false;document.querySelector('#boot').classList.add('hidden');document.querySelector('.hud').classList.add('live');document.querySelector('#toast').classList.add('show');setTimeout(()=>document.querySelector('#toast').classList.remove('show'),4200);canvas.requestPointerLock?.();}
-function tour(){started=true;autoTour=true;document.querySelector('#boot').classList.add('hidden');document.querySelector('.hud').classList.add('live');tourIndex=0;tourClock=0;camera.position.set(0,1.72,18.2);if(document.pointerLockElement===canvas)document.exitPointerLock();}
-
-document.querySelector('#enter').onclick=start;document.querySelector('#tour').onclick=tour;document.querySelector('#close').onclick=closeRoom;canvas.onclick=()=>{if(started&&!openRoom&&!autoTour)canvas.requestPointerLock?.()};
-document.addEventListener('pointerlockchange',()=>locked=document.pointerLockElement===canvas);
-document.addEventListener('mousemove',e=>{if(!locked||openRoom)return;yaw-=e.movementX*.0023;pitch=THREE.MathUtils.clamp(pitch-e.movementY*.0018,-1.18,1.18);});
-document.addEventListener('keydown',e=>{keys[e.key.toLowerCase()]=true;if(e.key==='Escape'&&openRoom)closeRoom();});document.addEventListener('keyup',e=>keys[e.key.toLowerCase()]=false);
-
-document.querySelectorAll('.mobile-pad button').forEach(b=>{const v=b.dataset.m;b.addEventListener('touchstart',e=>{e.preventDefault();touch[v]=1},{passive:false});b.addEventListener('touchend',e=>{e.preventDefault();touch[v]=0},{passive:false});b.addEventListener('touchcancel',()=>touch[v]=0);});
-
-document.querySelectorAll('.map button').forEach(b=>b.addEventListener('click',()=>{const r=rooms.find(x=>x.name===b.dataset.room);if(!r)return;camera.position.set(r.cx+(r.side==='L'?3.0:-3.0),1.72,r.cz);yaw=r.side==='L'?-Math.PI/2:Math.PI/2;pitch=0;openRoom(r.name);}));
-
-function blocked(x,z){for(const w of walls){if(x>w.x-w.w/2-.28&&x<w.x+w.w/2+.28&&z>w.z-w.d/2-.28&&z<w.z+w.d/2+.28)return true;}return false;}
-function move(dt){const f=((keys.w||keys.arrowup)?1:0)-((keys.s||keys.arrowdown)?1:0)||touch.up-touch.down;const r=((keys.d||keys.arrowright)?1:0)-((keys.a||keys.arrowleft)?1:0)||touch.right-touch.left;if(!f&&!r)return;const dir=new THREE.Vector3(Math.sin(yaw),0,Math.cos(yaw));const side=new THREE.Vector3(Math.cos(yaw),0,-Math.sin(yaw));const speed=4.6*dt;const nx=camera.position.x+(-dir.x*f+side.x*r)*speed;const nz=camera.position.z+(-dir.z*f+side.z*r)*speed;if(!blocked(nx,camera.position.z))camera.position.x=THREE.MathUtils.clamp(nx,-10.2,10.2);if(!blocked(camera.position.x,nz))camera.position.z=THREE.MathUtils.clamp(nz,-12.5,18.5);}
-const tourPoints=[{x:0,z:17.8},{x:0,z:11.5},{x:-4.6,z:6},{x:4.6,z:6},{x:-4.6,z:-1},{x:4.6,z:-1},{x:-4.6,z:-8.4},{x:4.6,z:-8.4},{x:0,z:11.5}];
-function runTour(dt){const t=tourPoints[tourIndex];camera.position.x=THREE.MathUtils.lerp(camera.position.x,t.x,dt*.75);camera.position.z=THREE.MathUtils.lerp(camera.position.z,t.z,dt*.75);const targetYaw=Math.atan2(t.x-camera.position.x,-(t.z-camera.position.z));yaw=THREE.MathUtils.lerp(yaw,targetYaw,dt*1.4);tourClock+=dt;if(tourClock>2.8){tourClock=0;tourIndex=(tourIndex+1)%tourPoints.length;}}
-
-function animate(){requestAnimationFrame(animate);const dt=Math.min(clock.getDelta(),.05);if(started&&!openRoom){if(autoTour)runTour(dt);else if(locked)move(dt);camera.position.y=1.72;camera.rotation.set(pitch,yaw,0,'YXZ');
-  for(const t of triggers){if(Math.hypot(camera.position.x-t.x,camera.position.z-t.z)<1.45){openRoom(t.name);break;}}
-  for(const d of doors){const near=Math.hypot(camera.position.x-d.group.position.x,camera.position.z-d.group.position.z)<2.8;const target=near?1:0;d.open=THREE.MathUtils.lerp(d.open,target,dt*5);d.group.rotation.y=-d.open*1.25;}
+const list=$('#projectList'),feature=$('#projectFeature');
+function renderProjects(){
+ const p=projects[0]; feature.innerHTML=`<div class="feature-copy"><small>FEATURED BUILD · ${p.type}</small><h3>${p.name}</h3><p>${p.desc}</p><a class="text-link" href="${p.url}" target="_blank" rel="noreferrer">OPEN REPOSITORY ↗</a></div>`;
+ list.innerHTML='';projects.slice(1).forEach(p=>{const e=document.createElement('article');e.className='project';e.tabIndex=0;e.innerHTML=`<span class="project-index">${p.id} / ${p.status}</span><h3>${p.name}</h3><p>${p.desc}</p><div class="tags">${p.stack.map(x=>`<span>${x}</span>`).join('')}</div><span class="open">VIEW CASE ↗</span>`;e.addEventListener('click',()=>openCase(p));e.addEventListener('keydown',ev=>{if(ev.key==='Enter'||ev.key===' ')openCase(p)});list.appendChild(e)});
 }
-const s=clock.elapsedTime;stars.rotation.y=s*.003;renderer.render(scene,camera);}
-animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,2));});
+renderProjects();
+
+function openCase(p){const modal=$('#projectModal'),content=$('#modalContent');content.innerHTML=`<div class="case"><div class="kicker">PROJECT ${p.id} / ${p.type}</div><h2>${p.name}</h2><p>${p.desc}</p><div class="case-grid"><div class="case-block"><small>PROBLEM</small><h3>What needed to be solved?</h3><p>A focused digital experience needs a clear user goal, simple interaction and reliable implementation. This build explores that problem through a working product concept.</p></div><div class="case-block"><small>IDEA</small><h3>Make the experience obvious.</h3><p>The interface is shaped around the primary action first, with technology supporting the experience rather than becoming decoration.</p></div><div class="case-block"><small>BUILD</small><h3>${p.stack.join(' · ')}</h3><p>The project is approached as an end-to-end build: interface, behavior, data/API integration where required, debugging and iteration.</p></div><div class="case-block"><small>RESULT</small><h3>Something you can explore.</h3><p>Status: ${p.status}. Open the repository to inspect the implementation and current state.</p></div></div><div class="case-links"><a href="${p.url}" target="_blank" rel="noreferrer">GITHUB ↗</a></div></div>`;modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
+function closeCase(){$('#projectModal').classList.remove('open');$('#projectModal').setAttribute('aria-hidden','true');document.body.style.overflow=''}$('#modalClose').onclick=closeCase;$('#projectModal').addEventListener('click',e=>{if(e.target.id==='projectModal')closeCase()});
+
+const nav=$('#nav'),progress=$('#progress'),sections=$$('main section[id]');
+function scrollUI(){const y=scrollY;nav.classList.toggle('scrolled',y>30);progress.style.width=`${Math.min(100,(y/(document.documentElement.scrollHeight-innerHeight))*100)}%`;let active='home';sections.forEach(s=>{if(y+innerHeight*.35>=s.offsetTop)active=s.id});$$('.nav nav a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+active))}addEventListener('scroll',scrollUI,{passive:true});scrollUI();
+
+$('#menuBtn').onclick=()=>$('#mobileMenu').classList.add('open');$('#menuClose').onclick=()=>$('#mobileMenu').classList.remove('open');$$('#mobileMenu a').forEach(a=>a.onclick=()=>$('#mobileMenu').classList.remove('open'));
+
+const cursor=$('#cursor');addEventListener('pointermove',e=>{cursor.style.left=e.clientX+'px';cursor.style.top=e.clientY+'px'});$$('a,button,.project,.skill').forEach(el=>{el.addEventListener('mouseenter',()=>cursor.classList.add('hover-cursor'));el.addEventListener('mouseleave',()=>cursor.classList.remove('hover-cursor'))});
+
+$$('.magnetic').forEach(el=>{el.addEventListener('pointermove',e=>{if(matchMedia('(max-width:700px)').matches)return;const r=el.getBoundingClientRect();el.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.08}px,${(e.clientY-r.top-r.height/2)*.08}px)`});el.addEventListener('pointerleave',()=>el.style.transform='')});
+
+const toast=(t)=>{const e=$('#toast');e.textContent=t;e.classList.add('show');clearTimeout(window.__toast);window.__toast=setTimeout(()=>e.classList.remove('show'),2600)};
+$('#contactForm').addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.currentTarget);const subject=encodeURIComponent('Portfolio inquiry from '+f.get('name'));const body=encodeURIComponent(f.get('message')+'\n\nReply to: '+f.get('email'));location.href=`mailto:yourasmit108@gmail.com?subject=${subject}&body=${body}`;toast('Opening your email client…')});
+
+let audioOn=false,audioCtx=null;$('#sound').onclick=()=>{audioOn=!audioOn;$('#sound').textContent=audioOn?'SOUND ON':'SOUND OFF';if(audioOn){audioCtx ||= new AudioContext();const o=audioCtx.createOscillator(),g=audioCtx.createGain();o.frequency.value=440;g.gain.value=.025;o.connect(g).connect(audioCtx.destination);o.start();o.stop(audioCtx.currentTime+.08)}};
+
+async function loadRepos(){const el=$('#repos');try{const r=await fetch('https://api.github.com/users/yourasmit15-web/repos?per_page=6&sort=updated');if(!r.ok)throw Error('GitHub API unavailable');const data=await r.json();if(!Array.isArray(data)||!data.length)throw Error('No repositories');el.innerHTML=data.map(x=>`<article class="repo"><small>${(x.language||'CODE').toUpperCase()} · ${x.visibility?.toUpperCase()||'PUBLIC'}</small><h3>${x.name}</h3><p>${x.description||'Public repository by Asmit Mishra.'}</p><div class="repo-foot"><span>★ ${x.stargazers_count||0}</span><span>FORKS ${x.forks_count||0}</span><a class="text-link" href="${x.html_url}" target="_blank" rel="noreferrer">OPEN ↗</a></div></article>`).join('')}catch(err){el.innerHTML=`<article class="repo" style="grid-column:1/-1"><small>PUBLIC DATA</small><h3>GitHub activity is temporarily unavailable.</h3><p>Open the public profile directly to see the latest repositories and activity.</p><div class="repo-foot"><a class="text-link" href="https://github.com/yourasmit15-web" target="_blank" rel="noreferrer">OPEN GITHUB ↗</a></div></article>`}}loadRepos();
+
+// Lightweight Three.js hero: a stylized developer workspace with real-time mouse parallax.
+let renderer,scene3,camera3,group,raf;const canvas=$('#world');
+function makeMat(c,rough=.55,metal=0){return new THREE.MeshStandardMaterial({color:c,roughness:rough,metalness:metal})}const mats={dark:makeMat(0x111820,.35,.35),cyan:makeMat(0x67e8f9,.25,.6),desk:makeMat(0x342a25,.8),light:makeMat(0xd8fbff,.2,.2),glass:new THREE.MeshPhysicalMaterial({color:0x67e8f9,transparent:true,opacity:.12,roughness:.1,metalness:.2})};
+function cube(x,y,z,w,h,d,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;group.add(o);return o}
+function buildWorld(){try{renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,powerPreference:'high-performance'});renderer.setPixelRatio(Math.min(devicePixelRatio,1.7));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.shadowMap.enabled=true;scene3=new THREE.Scene();scene3.fog=new THREE.FogExp2(0x071016,.045);camera3=new THREE.PerspectiveCamera(48,innerWidth/innerHeight,.1,100);camera3.position.set(0,3.2,12);group=new THREE.Group();scene3.add(group);
+ const hemi=new THREE.HemisphereLight(0xbdeaff,0x071016,1.8);scene3.add(hemi);const key=new THREE.PointLight(0x67e8f9,35,25);key.position.set(1,5,4);key.castShadow=true;scene3.add(key);const rim=new THREE.PointLight(0xa78bfa,20,20);rim.position.set(-6,3,0);scene3.add(rim);
+ cube(0,-.35,0,20,.5,14,mats.dark);cube(0,.8,-1,7,.2,3,mats.desk);cube(0,1.5,-1.1,4.2,.15,.15,mats.dark);
+ const mon=cube(0,2.5,-1.3,3.8,2.1,.15,mats.dark);cube(0,2.5,-1.38,3.45,1.72,.03,mats.glass);cube(0,1.9,-1.32,.3,.5,.3,mats.dark);cube(0,1.66,-1.32,1.3,.12,.5,mats.dark);
+ for(let i=0;i<10;i++)cube(-1.7+i*.38,1.72,-.8,.23,.03,.5,i%2?mats.cyan:mats.light);
+ for(let i=0;i<4;i++){const h=.8+i*.45;cube(4+i*.4,h,-2,.2,h,.2,mats.cyan)}
+ for(let i=0;i<12;i++){const p=new THREE.Mesh(new THREE.SphereGeometry(.025+Math.random()*.045,8,8),mats.cyan);p.position.set(-7+Math.random()*14,1+Math.random()*6,-5+Math.random()*5);group.add(p)}
+ for(let i=0;i<3;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(1.4+i*.45,.012,8,80),mats.cyan);ring.position.set(4,3+i*.35,-2);ring.rotation.x=Math.PI/2.3;group.add(ring)}
+ addEventListener('pointermove',e=>{if(innerWidth<800)return;const nx=e.clientX/innerWidth-.5,ny=e.clientY/innerHeight-.5;group.rotation.y=nx*.08;group.rotation.x=-ny*.045;camera3.position.x=nx*.8;camera3.position.y=3.2-ny*.5;camera3.lookAt(0,1.6,-1)});const animate=()=>{raf=requestAnimationFrame(animate);group.children.forEach((o,i)=>{if(o.geometry?.type==='TorusGeometry')o.rotation.z+=.0015*(i%2?1:-1)});renderer.render(scene3,camera3)};animate();}catch(e){canvas.style.display='none'}}buildWorld();
+addEventListener('resize',()=>{if(!renderer)return;camera3.aspect=innerWidth/innerHeight;camera3.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,1.7))});
+
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in-view')}),{threshold:.12});$$('.section').forEach(s=>observer.observe(s));
