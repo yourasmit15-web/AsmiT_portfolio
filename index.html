@@ -1,1 +1,73 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#07100d"><meta name="description" content="AsmiT Mishra — Full-Stack Developer & AI Builder. An immersive 3D portfolio house."><title>AsmiT Mishra — The Developer House</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="real-house.css?v=20260903.4"></head><body><main class="house-app"><div class="ui"><header class="top"><div class="brand"><span>AM</span><div><b>ASMIT MISHRA</b><small>FULL-STACK × AI</small></div></div><div class="status"><i></i> OPEN TO OPPORTUNITIES</div></header><div class="intro"><div class="eyebrow">THE DEVELOPER HOUSE · 2026</div><h1>Come inside.<br><em>See how I build.</em></h1><p>An interactive portfolio where every room represents a chapter of my work — products, skills, education, experience and the person behind the code.</p><div class="actions"><button class="enter">ENTER THE HOUSE <span>↗</span></button><button class="tour">TAKE THE TOUR</button></div><div class="intro-meta"><span>3D WALKTHROUGH</span><span>•</span><span>DESKTOP + MOBILE</span></div></div><div class="hud"><div class="crosshair"></div><div class="location"><small>YOU ARE IN</small><strong class="room-name">FRONT YARD</strong></div></div><aside class="minimap"><div class="map-title">HOUSE MAP</div><div class="map"><b class="you"></b><span class="m-about">ABOUT</span><span class="m-skills">SKILLS</span><span class="m-projects">PROJECTS</span><span class="m-education">EDUCATION</span><span class="m-experience">EXPERIENCE</span><span class="m-contact">CONTACT</span></div></aside><div class="controls"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> MOVE <span>•</span> <kbd>MOUSE</kbd> LOOK <span>•</span> WALK TO ENTER</div><div class="mobile-controls"><button data-move="up">▲</button><button data-move="left">◀</button><button data-move="down">▼</button><button data-move="right">▶</button></div><section class="panel"><button class="close" aria-label="Close">×</button><div class="panel-kicker">ROOM DISCOVERED</div><h2>ROOM</h2><p></p><div class="panel-links"></div><div class="chips"><span>WALK AROUND</span><span>ESC CLOSE</span></div></section><div class="toast">Walk toward a room to discover it.</div></div></main><script type="module" src="real-house.js?v=20260903.4"></script></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#05070b">
+<meta name="description" content="AsmiT Mishra — Full-Stack Developer × AI Builder. Explore the developer house.">
+<title>ASMIT — Developer House</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="real-house.css?v=20260903.9">
+</head>
+<body>
+<main class="app">
+  <div id="scene"></div>
+  <div class="scanlines"></div>
+
+  <section class="boot" id="boot">
+    <div class="boot-grid"></div>
+    <div class="boot-card">
+      <div class="boot-mark">AM</div>
+      <div class="boot-kicker">ASMIT MISHRA // DEVELOPER HOUSE</div>
+      <h1>Build.<br><span>Ship.</span><br>Repeat.</h1>
+      <p>Not a résumé. A place you can walk through. Every room is a chapter of the work behind the screen.</p>
+      <div class="boot-actions"><button id="enter" class="primary">ENTER HOUSE <b>↗</b></button><button id="tour" class="secondary">AUTO TOUR</button></div>
+      <div class="boot-status"><i></i> WORLD LOADED <span>•</span> 3D WALKTHROUGH <span>•</span> 2026</div>
+    </div>
+  </section>
+
+  <header class="topbar">
+    <div class="identity"><div class="monogram">AM</div><div><strong>ASMIT</strong><small>FULL-STACK × AI</small></div></div>
+    <div class="online"><i></i> OPEN TO OPPORTUNITIES</div>
+  </header>
+
+  <div class="hud">
+    <div class="reticle"><span></span></div>
+    <div class="location"><small>CURRENT AREA</small><strong id="area">FRONT YARD</strong></div>
+    <div class="objective"><small>OBJECTIVE</small><b>EXPLORE THE HOUSE</b></div>
+    <div class="hint"><kbd>WASD</kbd> MOVE <span>·</span> <kbd>MOUSE</kbd> LOOK <span>·</span> <kbd>ESC</kbd> CLOSE</div>
+  </div>
+
+  <aside class="map-card">
+    <div class="map-head"><span>HOUSE // MAP</span><b>01</b></div>
+    <div class="map">
+      <div class="map-line a"></div><div class="map-line b"></div>
+      <button data-room="ABOUT" style="--x:22%;--y:20%">01</button><label style="--x:22%;--y:28%">ABOUT</label>
+      <button data-room="SKILLS" style="--x:78%;--y:20%">02</button><label style="--x:78%;--y:28%">SKILLS</label>
+      <button data-room="PROJECTS" style="--x:22%;--y:48%">03</button><label style="--x:22%;--y:56%">PROJECTS</label>
+      <button data-room="EDUCATION" style="--x:78%;--y:48%">04</button><label style="--x:78%;--y:56%">EDUCATION</label>
+      <button data-room="EXPERIENCE" style="--x:35%;--y:78%">05</button><label style="--x:35%;--y:86%">EXPERIENCE</label>
+      <button data-room="CONTACT" style="--x:65%;--y:78%">06</button><label style="--x:65%;--y:86%">CONTACT</label>
+      <span class="player-dot"></span>
+    </div>
+  </aside>
+
+  <div class="room-panel" id="panel" aria-hidden="true">
+    <button class="close" id="close">×</button>
+    <div class="panel-index" id="panelIndex">ROOM 01</div>
+    <div class="panel-kicker" id="panelKicker">DISCOVERED</div>
+    <h2 id="panelTitle">ABOUT</h2>
+    <p id="panelText"></p>
+    <div class="panel-grid" id="panelGrid"></div>
+    <div class="panel-actions" id="panelActions"></div>
+    <div class="panel-footer"><span>WALK TO ANOTHER ROOM</span><span>ESC CLOSE</span></div>
+  </div>
+
+  <div class="mobile-pad" id="mobilePad"><button data-m="up">▲</button><button data-m="left">◀</button><button data-m="down">▼</button><button data-m="right">▶</button></div>
+  <div class="toast" id="toast">Walk toward a room to discover it.</div>
+</main>
+<script type="module" src="real-house.js?v=20260903.9"></script>
+</body>
+</html>
