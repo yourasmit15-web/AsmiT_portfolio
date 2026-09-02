@@ -1,0 +1,14 @@
+/* Cinematic visitor camera system */
+html{scroll-behavior:smooth}
+body.house-site{perspective:1600px;perspective-origin:50% 45%}
+main{transform-style:preserve-3d}
+.section.room{--cam-x:0deg;--cam-y:0deg;--cam-z:0px;--cam-lift:0px;transform:perspective(1500px) rotateX(var(--cam-x)) rotateY(var(--cam-y)) translate3d(0,var(--cam-lift),var(--cam-z));transform-origin:50% 50%;will-change:transform;transition:transform .12s linear;backface-visibility:hidden}
+.house-hero{--cam-rotate:0deg;--cam-pan:0px}
+.house-hero .house-scene{will-change:transform;transform-style:preserve-3d}
+.house-hero.camera-active .house-scene{filter:saturate(1.08) contrast(1.03)}
+.house-hero.camera-active .house{filter:drop-shadow(0 55px 55px rgba(0,0,0,.62))}
+.camera-vignette{position:fixed;inset:0;z-index:90;pointer-events:none;border:1px solid rgba(255,255,255,.02);box-shadow:inset 0 0 150px rgba(0,0,0,.28);opacity:.7;transition:opacity .5s ease}
+.camera-readout{position:fixed;left:24px;bottom:24px;z-index:101;display:flex;align-items:center;gap:10px;padding:8px 11px;border:1px solid rgba(148,163,184,.16);border-radius:999px;background:rgba(3,7,15,.58);backdrop-filter:blur(12px);color:#94a3b8;font:700 9px/1 Inter,system-ui;letter-spacing:1.4px;pointer-events:none;opacity:.7}
+.camera-readout i{width:6px;height:6px;border-radius:50%;background:#22d3ee;box-shadow:0 0 12px rgba(34,211,238,.8)}
+@media(max-width:760px){.section.room{transform:perspective(1000px) translate3d(0,var(--cam-lift),var(--cam-z));transition:transform .16s linear}.camera-readout{left:12px;bottom:12px;font-size:8px}.camera-vignette{box-shadow:inset 0 0 80px rgba(0,0,0,.2)}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.section.room{transform:none!important}.camera-vignette,.camera-readout{display:none!important}}
