@@ -16,7 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="real-house.css?v=20260903.10">
+<link rel="stylesheet" href="real-house.css?v=20260903.11">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Asmit Mishra","url":"https://yourasmit15-web.github.io/AsmiT_portfolio/","jobTitle":"Full-Stack Developer","sameAs":["https://github.com/yourasmit15-web","https://www.linkedin.com/in/asmitxmishra","https://www.instagram.com/asmitx.dev/"]}</script>
 </head>
 <body>
@@ -25,15 +25,16 @@
 <div class="mobile-menu" id="mobileMenu"><button id="menuClose" aria-label="Close menu">×</button><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#experience">Experience</a><a href="#certificates">Certificates</a><a href="#contact">Contact</a></div>
 <main>
 <section class="hero" id="home">
-  <canvas id="world" aria-label="Interactive 3D developer workspace"></canvas><div class="hero-noise"></div><div class="hero-grid"></div>
-  <div class="hero-copy"><div class="eyebrow"><i></i> FULL-STACK DEVELOPER × AI ENTHUSIAST</div><h1>I Build Digital<br><em>Experiences</em><br>That Think, Move<br>&amp; Perform.</h1><p>I turn ideas into useful digital products — from polished interfaces and full-stack systems to AI-powered experiments.</p><div class="hero-actions"><a class="btn primary magnetic" href="#projects">EXPLORE MY WORK <span>↗</span></a><a class="btn ghost magnetic" href="#contact">LET'S CONNECT <span>→</span></a></div><div class="hero-meta"><span>BASED IN INDIA</span><span>AVAILABLE FOR OPPORTUNITIES</span><span>SCROLL TO ENTER ↓</span></div></div>
-  <div class="hero-console"><div class="console-top"><span><i></i><i></i><i></i></span><small>asmit@world:~</small><b>LIVE</b></div><pre><code><span class="c">const</span> builder = {
+  <canvas id="world" aria-label="Interactive 3D house portfolio. Click a room to explore the portfolio."></canvas><div class="hero-noise"></div><div class="hero-grid"></div>
+  <div class="hero-copy"><div class="eyebrow"><i></i> ASMIT MISHRA · FULL-STACK DEVELOPER × AI ENTHUSIAST</div><h1>I Build Digital<br><em>Experiences</em><br>That Think, Move<br>&amp; Perform.</h1><p>Developer • AI Enthusiast • Problem Solver • Builder. Explore the house, discover the work, and step inside the things I build.</p><div class="hero-actions"><a class="btn primary magnetic" href="#projects">EXPLORE MY WORK <span>↗</span></a><a class="btn ghost magnetic" href="#contact">LET'S CONNECT <span>→</span></a></div><div class="hero-meta"><span>BASED IN INDIA</span><span>AVAILABLE FOR OPPORTUNITIES</span><span>SCROLL TO ENTER ↓</span></div></div>
+  <div class="hero-console"><div class="console-top"><span><i></i><i></i><i></i></span><small>asmit@home:~</small><b>WORLD ONLINE</b></div><pre><code><span class="c">const</span> builder = {
   name: <span class="s">"Asmit Mishra"</span>,
   focus: <span class="s">"Full-Stack × AI"</span>,
   mode: <span class="s">"build → ship → improve"</span>,
   status: <span class="s">"creating"</span>
 };</code></pre></div>
-  <div class="hero-scroll">SCROLL <span></span> ENTER THE UNIVERSE</div>
+  <div class="house-hud" aria-hidden="true"><span>HOUSE MODE</span><b>CLICK A ROOM</b><small>ABOUT · SKILLS · PROJECTS · AI LAB</small></div>
+  <div class="hero-scroll">SCROLL <span></span> ENTER THE HOUSE</div>
 </section>
 
 <section class="section about" id="about"><div class="section-head"><span>01 / THE ROOM</span><b>ABOUT</b></div><div class="about-grid"><div><div class="kicker">CURIOUS BY DEFAULT.</div><h2>Build it.<br>Break it.<br><em>Understand it.</em></h2></div><div class="about-text"><p>I'm Asmit Mishra, a Full-Stack Developer and AI enthusiast focused on turning ideas into useful digital products. I learn fastest by getting hands-on: building, debugging, experimenting and shipping.</p><p>My approach is simple — understand the problem, make the experience clear, choose technology for a reason, then keep improving what actually works.</p><div class="journey"><span>LEARN</span><i>→</i><span>BUILD</span><i>→</i><span>EXPERIMENT</span><i>→</i><span>SHIP</span><i>→</i><span>IMPROVE</span></div></div></div><div class="room-object"><div class="orb"><span>AM</span></div><div class="room-note"><small>DEVELOPER STATE</small><b>ALWAYS LEARNING.</b><b>ALWAYS BUILDING.</b></div></div></section>
@@ -55,5 +56,8 @@
 <footer><div><b>ASMIT MISHRA</b><span>Building. Learning. Experimenting.</span></div><div class="footer-links"><a href="https://github.com/yourasmit15-web" target="_blank" rel="noreferrer">GitHub</a><a href="https://www.linkedin.com/in/asmitxmishra" target="_blank" rel="noreferrer">LinkedIn</a><a href="mailto:yourasmit108@gmail.com">Email</a><a href="https://www.instagram.com/asmitx.dev/" target="_blank" rel="noreferrer">Instagram</a></div><small>© 2026 Asmit Mishra. All rights reserved.</small></footer>
 <div class="project-modal" id="projectModal" aria-hidden="true"><button id="modalClose" aria-label="Close project">×</button><div id="modalContent"></div></div>
 <div class="toast" id="toast"></div>
-<script type="module" src="real-house.js?v=20260903.10"></script>
+<style>
+.house-hud{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:14px;padding:10px 14px;border:1px solid #ffffff1c;background:#070a0dcc;backdrop-filter:blur(12px);font:500 7px 'DM Mono',monospace;letter-spacing:.12em;color:#75817f;white-space:nowrap}.house-hud b{color:#67e8f9;font-weight:500}.house-hud small{color:#5b6866}.house-hud:before{content:'●';color:#67e8f9;font-size:6px}.hero-copy{max-width:720px}.hero-console{opacity:.92}@media(max-width:800px){.house-hud{bottom:22px;max-width:88vw;overflow:hidden}.house-hud small{display:none}.hero-console{display:none}.hero-copy{top:47%;width:88vw}.hero-meta{flex-wrap:wrap}.hero-scroll{bottom:74px;right:6vw}}
+</style>
+<script type="module" src="real-house.js?v=20260903.11"></script>
 </body></html>
