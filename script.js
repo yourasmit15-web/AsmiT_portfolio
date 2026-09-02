@@ -11,7 +11,16 @@ document.addEventListener('DOMContentLoaded',()=>{
  addEventListener('scroll',()=>{if(progress){const max=document.documentElement.scrollHeight-innerHeight;progress.style.width=`${max>0?(scrollY/max)*100:0}%`;}},{passive:true});
  const glow=document.querySelector('.cursor-glow');
  if(glow&&matchMedia('(pointer:fine)').matches){addEventListener('pointermove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'})}
- const filterButtons=[...document.querySelectorAll('.filters button')];
- filterButtons.forEach(btn=>btn.addEventListener('click',()=>{filterButtons.forEach(b=>b.classList.remove('active'));btn.classList.add('active');const f=btn.dataset.filter;document.querySelectorAll('.project-card').forEach(card=>{const show=f==='all'||card.dataset.type===f;card.style.display=show?'block':'none';if(show)card.animate([{opacity:.2,transform:'translateY(12px)'},{opacity:1,transform:'translateY(0)'}],{duration:320,easing:'ease-out'})})}));
- document.querySelectorAll('.project-card,.skill-card,.timeline-item,.contact-links a').forEach(card=>card.addEventListener('pointerenter',()=>card.style.setProperty('--lift','1')));
+ // Desktop 3D room parallax: the room subtly tilts toward the pointer, while content stays readable.
+ if(matchMedia('(pointer:fine)').matches&&!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const rooms=[document.querySelector('.hero'),...document.querySelectorAll('.section')].filter(Boolean);
+  let px=0,py=0,raf=0;
+  addEventListener('pointermove',e=>{px=(e.clientX/innerWidth-.5);py=(e.clientY/innerHeight-.5);if(!raf)raf=requestAnimationFrame(()=>{rooms.forEach((room,i)=>{const strength=i===0?2.8:1.35;room.style.transform=`rotateX(${(-py*strength).toFixed(2)}deg) rotateY(${(px*strength).toFixed(2)}deg)`});raf=0})},{passive:true});
+  addEventListener('pointerleave',()=>rooms.forEach(room=>room.style.transform=''),{passive:true});
+ }
+ // Give interactive cards a small magnetic lift.
+ document.querySelectorAll('.project-card,.skill-card,.contact-links a').forEach(card=>{
+  card.addEventListener('pointermove',e=>{if(!matchMedia('(pointer:fine)').matches)return;const r=card.getBoundingClientRect();const x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;card.style.transform=`translateY(-8px) rotateX(${(-y*5).toFixed(2)}deg) rotateY(${(x*5).toFixed(2)}deg) translateZ(12px)`},{passive:true});
+  card.addEventListener('pointerleave',()=>card.style.removeProperty('transform'));
+ });
 });
