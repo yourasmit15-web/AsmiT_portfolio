@@ -1,12 +1,3 @@
+@import url('portfolio-pages.css');
 /* Premium header + footer polish */
-.nav{isolation:isolate}
-.nav:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#67e8f90b,transparent 28%,transparent 72%,#ec48990b);z-index:-1}
-.brand{position:relative}.brand span{font-weight:800;letter-spacing:-.08em}
-.nav nav a{white-space:nowrap}
-.nav-tools button{white-space:nowrap}
-.footer-links a{position:relative;padding:8px 0}
-.footer-links a:after{content:"";position:absolute;left:0;right:0;bottom:3px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}
-.footer-links a:hover:after{transform:scaleX(1)}
-footer{min-height:210px}
-footer:before{content:"";position:absolute;left:8vw;right:8vw;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.45}
-@media(max-width:800px){.nav{left:12px;right:12px}.nav-tools .menu-btn{min-width:62px}.footer-links{gap:16px 24px}.footer-links a{padding:6px 0}footer{min-height:0}}
+.nav{isolation:isolate}.nav:before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(90deg,#67e8f90b,transparent 28%,transparent 72%,#ec48990b);z-index:-1}.brand{position:relative}.brand span{font-weight:800;letter-spacing:-.08em}.nav nav a{white-space:nowrap}.nav-tools button{white-space:nowrap}.footer-links a{position:relative;padding:8px 0}.footer-links a:after{content:"";position:absolute;left:0;right:0;bottom:3px;height:1px;background:var(--accent);transform:scaleX(0);transform-origin:left;transition:transform .25s}.footer-links a:hover:after{transform:scaleX(1)}footer{min-height:210px}footer:before{content:"";position:absolute;left:8vw;right:8vw;top:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.45}@media(max-width:800px){.nav{left:12px;right:12px}.nav-tools .menu-btn{min-width:62px}.footer-links{gap:16px 24px}.footer-links a{padding:6px 0}footer{min-height:0}}
