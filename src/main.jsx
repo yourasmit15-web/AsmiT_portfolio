@@ -11,7 +11,7 @@ const PROFILE = {
   image: '/profile.svg',
 }
 
-const navItems = ['Home', 'About', 'Experience', 'Education', 'Skills', 'Projects', 'Contact']
+const navItems = ['Home', 'About', 'Education', 'Skills', 'Projects', 'Contact']
 
 const projects = [
   { title: 'RAGHUVIR', type: 'AI', number: '01', description: 'An AI assistant focused on productivity, research, multi-device control, browser automation, and permission-aware workflows.', stack: ['Python', 'FastAPI', 'Docker'], href: PROFILE.github },
@@ -132,16 +132,8 @@ function App() {
           </div>
         </section>
 
-        <section id="experience" className="section-pad section-grid reveal">
-          <div className="section-index">02 / EXPERIENCE</div>
-          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Where I’ve been</p><h2>Work that<br /><span>taught me.</span></h2></div></div><div className="experience-list">
-            <article className="experience-card"><span className="year">2026</span><div><p className="role">Full-Stack Developer Intern</p><p className="company">Hivens (Just Inc.)</p><p className="body-copy">Built and maintained web experiences, improved product features, fixed issues, and worked across the stack.</p></div><span className="card-arrow">↗</span></article>
-            <article className="experience-card"><span className="year">NOW</span><div><p className="role">Independent Builder</p><p className="company">AI · Web · Creative Tech</p><p className="body-copy">Building personal products, experimenting with AI workflows, and turning ideas into responsive digital experiences.</p></div><span className="card-arrow">↗</span></article>
-          </div></div>
-        </section>
-
         <section id="education" className="section-pad section-grid reveal">
-          <div className="section-index">03 / EDUCATION</div>
+          <div className="section-index">02 / EDUCATION</div>
           <div className="section-content"><p className="eyebrow">Learning by doing</p><h2>Always <span>curious.</span></h2><div className="education-grid">
             <article><span>2024 — 2027</span><h3>BCA</h3><p>Meena Shah Institute of Technology and Management</p></article>
             <article><span>2022 — 2024</span><h3>12th — PCM</h3><p>Senior secondary education</p></article>
@@ -149,17 +141,17 @@ function App() {
         </section>
 
         <section id="skills" className="section-pad section-grid reveal">
-          <div className="section-index">04 / SKILLS</div>
+          <div className="section-index">03 / SKILLS</div>
           <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">My toolkit</p><h2>Things I use to<br /><span>make ideas real.</span></h2></div><p className="body-copy narrow">A practical stack for modern web applications, product interfaces, and AI-powered experiments.</p></div><div className="skills-grid">{skills.map(([name, code], index) => <div className="skill-card" key={name} style={{ '--delay': `${index * 35}ms` }}><Mark>{code}</Mark><span>{name}</span><b>↗</b></div>)}</div></div>
         </section>
 
         <section id="projects" className="section-pad section-grid reveal">
-          <div className="section-index">05 / PROJECTS</div>
+          <div className="section-index">04 / PROJECTS</div>
           <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Selected builds</p><h2>Made with<br /><span>purpose.</span></h2></div><div className="filters">{['All', 'Web', 'AI'].map((item) => <button key={item} onClick={() => setFilter(item)} className={filter === item ? 'filter active' : 'filter'}>{item}</button>)}</div></div><div className="project-grid">{filteredProjects.map((project) => <article className="project-card" key={project.title}><div className="project-art"><span>{project.number}</span><b>{project.title.slice(0, 1)}</b><small>{project.type} PROJECT</small><i>✦</i></div><div className="project-info"><div className="project-title"><h3>{project.title}</h3><span>{project.type}</span></div><p>{project.description}</p><div className="tags">{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><a href={project.href} target="_blank" rel="noreferrer">View project <Arrow /></a></div></article>)}</div></div>
         </section>
 
         <section id="contact" className="section-pad section-grid reveal contact-section">
-          <div className="section-index">06 / CONTACT</div>
+          <div className="section-index">05 / CONTACT</div>
           <div className="section-content"><div className="contact-box"><div className="contact-copy"><p className="eyebrow">Have a project in mind?</p><h2>Let’s make<br /><span>something good.</span></h2><p className="body-copy">Whether it’s a product, an experiment, or an opportunity to collaborate — I’d love to hear about it.</p><div className="contact-links"><a href={`mailto:${PROFILE.email}`}>✉ {PROFILE.email}</a><a href={PROFILE.github} target="_blank" rel="noreferrer">⌘ github.com/yourasmit15-web</a><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">in linkedin.com/in/asmitxmishra</a></div></div><form className="contact-form" action="https://formsubmit.co/yourasmit108@gmail.com" method="POST"><input type="hidden" name="_subject" value="New portfolio message — AsmiT Mishra" /><input type="hidden" name="_captcha" value="false" /><input type="hidden" name="_template" value="table" /><input type="hidden" name="_next" value="https://asmit-portfolio-asmitmishra.vercel.app/#contact" /><label>Name<input name="name" required autoComplete="name" placeholder="Your name" /></label><label>Email<input name="email" type="email" required autoComplete="email" placeholder="you@example.com" /></label><label>Message<textarea name="message" required rows="5" placeholder="Tell me about your idea..." /></label><button className="button button-primary" type="submit">Send message <Arrow /></button></form></div></div>
         </section>
       </main>
