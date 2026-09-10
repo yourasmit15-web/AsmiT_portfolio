@@ -1,84 +1,170 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 
-const profileImage = '/profile.svg'
+const PROFILE = {
+  name: 'AsmiT Mishra',
+  email: 'yourasmit108@gmail.com',
+  github: 'https://github.com/yourasmit15-web',
+  linkedin: 'https://www.linkedin.com/in/asmitxmishra',
+  instagram: 'https://www.instagram.com/asmitx.dev',
+  image: '/profile.svg',
+}
+
+const navItems = ['Home', 'About', 'Experience', 'Education', 'Skills', 'Projects', 'Contact']
 
 const projects = [
-  { title: 'Raghuvir', type: 'AI / Web', text: 'An AI-powered assistant concept for productivity, research, and automation.', tags: ['Next.js', 'OpenAI', 'PostgreSQL'], href: 'https://github.com/yourasmit15-web?tab=repositories' },
-  { title: 'Dhun', type: 'Web App', text: 'A music platform for discovering, listening to, and sharing favorite tracks.', tags: ['React', 'Node.js', 'MongoDB'], href: 'https://github.com/yourasmit15-web?tab=repositories' },
-  { title: 'Trove', type: 'Web App', text: 'A modern digital resource and content management experience.', tags: ['Next.js', 'TypeScript', 'Tailwind'], href: 'https://github.com/yourasmit15-web/TROVE' },
-  { title: 'RealSense', type: 'Extension', text: 'A browser interaction experiment turning user behavior into actionable insights.', tags: ['JavaScript', 'Extension', 'UX'], href: 'https://github.com/yourasmit15-web?tab=repositories' },
-  { title: 'YouTube Trimmer', type: 'Web App', text: 'A focused utility experiment for precise video trimming workflows.', tags: ['React', 'Media', 'Web'], href: 'https://github.com/yourasmit15-web?tab=repositories' },
-  { title: 'MedInfoAI', type: 'AI / ML', text: 'An AI/ML experiment exploring image-based information workflows.', tags: ['Python', 'AI/ML', 'Vision'], href: 'https://github.com/yourasmit15-web?tab=repositories' },
+  { title: 'RAGHUVIR', type: 'AI', number: '01', description: 'An AI assistant focused on productivity, research, multi-device control, browser automation, and permission-aware workflows.', stack: ['Python', 'FastAPI', 'Docker'], href: PROFILE.github },
+  { title: 'DHUN', type: 'Web', number: '02', description: 'A Spotify-inspired music experience for discovering, listening to, and sharing favorite tracks with a clean modern interface.', stack: ['React', 'Node.js', 'MongoDB'], href: PROFILE.github },
+  { title: 'TROVE', type: 'Web', number: '03', description: 'A modern digital resource and content management experience built around a focused, responsive product interface.', stack: ['Next.js', 'TypeScript', 'Tailwind'], href: 'https://github.com/yourasmit15-web/TROVE' },
+  { title: 'REALSENSE', type: 'Web', number: '04', description: 'A browser interaction experiment exploring user behavior, useful signals, and actionable insights.', stack: ['JavaScript', 'Extension', 'UX'], href: PROFILE.github },
+  { title: 'YOUTUBE TRIMMER', type: 'Web', number: '05', description: 'A focused utility experiment for simple, precise video trimming workflows directly in the browser.', stack: ['React', 'Media', 'Web'], href: PROFILE.github },
+  { title: 'MEDINFOAI', type: 'AI', number: '06', description: 'An AI/ML experiment exploring image-based information workflows and practical computer-vision ideas.', stack: ['Python', 'AI/ML', 'Vision'], href: PROFILE.github },
 ]
 
-const skills = ['React', 'Next.js', 'TypeScript', 'JavaScript', 'Node.js', 'Python', 'MongoDB', 'PostgreSQL', 'Tailwind CSS', 'Git', 'Docker', 'AI / ML']
+const skills = [
+  ['React', 'RE'], ['Next.js', 'NX'], ['TypeScript', 'TS'], ['JavaScript', 'JS'],
+  ['Node.js', 'ND'], ['Python', 'PY'], ['MongoDB', 'MG'], ['PostgreSQL', 'PG'],
+  ['Tailwind CSS', 'TW'], ['Git & GitHub', 'GH'], ['Docker', 'DK'], ['AI / ML', 'AI'],
+]
 
-function Icon({ children }) { return <span className="icon" aria-hidden="true">{children}</span> }
+function Arrow() { return <span aria-hidden="true">↗</span> }
+function Mark({ children }) { return <span className="mark" aria-hidden="true">{children}</span> }
 
 function App() {
-  const [dark, setDark] = useState(() => localStorage.getItem('asmit-theme') !== 'light')
-  const [menu, setMenu] = useState(false)
-  const [activeFilter, setActiveFilter] = useState('All')
+  const [dark, setDark] = useState(() => localStorage.getItem('asmit-theme') === 'dark')
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [filter, setFilter] = useState('All')
+  const [active, setActive] = useState('Home')
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', dark)
     localStorage.setItem('asmit-theme', dark ? 'dark' : 'light')
   }, [dark])
 
-  const filtered = projects.filter(p => activeFilter === 'All' || p.type.includes(activeFilter))
+  useEffect(() => {
+    const sections = navItems.map((item) => document.getElementById(item.toLowerCase())).filter(Boolean)
+    const observer = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
+      if (visible) setActive(visible.target.id.charAt(0).toUpperCase() + visible.target.id.slice(1))
+    }, { rootMargin: '-25% 0px -55% 0px', threshold: [0.05, 0.2, 0.5] })
+    sections.forEach((section) => observer.observe(section))
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    const reveal = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('is-visible')
+      })
+    }, { threshold: 0.12 })
+    document.querySelectorAll('.reveal').forEach((element) => reveal.observe(element))
+    return () => reveal.disconnect()
+  }, [])
+
+  const filteredProjects = projects.filter((project) => filter === 'All' || project.type === filter)
+
+  const goTo = (item) => {
+    setMenuOpen(false)
+    document.getElementById(item.toLowerCase())?.scrollIntoView({ behavior: 'smooth' })
+  }
 
   return (
-    <div className="min-h-screen bg-surface text-ink transition-colors duration-500">
-      <div className="ambient ambient-a" /><div className="ambient ambient-b" />
-      <header className="fixed inset-x-0 top-0 z-50 px-4 pt-4 sm:px-6">
-        <div className="mx-auto flex max-w-6xl items-center justify-between rounded-2xl border border-line bg-panel/85 px-4 py-3 shadow-glass backdrop-blur-xl sm:px-6">
-          <a href="#home" className="flex items-center gap-3 font-black tracking-tight"><span className="grid h-9 w-9 place-items-center rounded-xl bg-violet text-white shadow-glow">AM</span><span className="hidden sm:block">AsmiT<span className="text-violet">.</span></span></a>
-          <nav className="hidden items-center gap-7 text-sm text-muted md:flex">{['Home','About','Experience','Education','Skills','Projects','Contact'].map(x => <a key={x} className="nav-link" href={'#'+x.toLowerCase()}>{x}</a>)}</nav>
-          <div className="flex items-center gap-2"><a href="#contact" className="hidden rounded-full bg-violet px-4 py-2 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:shadow-glow sm:inline-flex">Let’s Talk →</a><button onClick={() => setDark(v=>!v)} className="theme-btn" aria-label="Toggle theme">{dark ? '☀' : '☾'}</button><button onClick={()=>setMenu(v=>!v)} className="theme-btn md:hidden" aria-label="Toggle menu">{menu ? '×' : '☰'}</button></div>
+    <div className="site-shell">
+      <div className="noise" aria-hidden="true" />
+      <div className="blob blob-one" aria-hidden="true" />
+      <div className="blob blob-two" aria-hidden="true" />
+
+      <header className="topbar">
+        <div className="nav-wrap">
+          <button className="brand" onClick={() => goTo('Home')} aria-label="Go to home">
+            <span className="brand-box">AM</span><span>AsmiT<span className="accent">.</span></span>
+          </button>
+          <nav className="desktop-nav" aria-label="Primary navigation">
+            {navItems.map((item) => <button key={item} className={active === item ? 'nav-item active' : 'nav-item'} onClick={() => goTo(item)}>{item}</button>)}
+          </nav>
+          <div className="nav-actions">
+            <button className="icon-button" onClick={() => setDark((value) => !value)} aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}>{dark ? '☀' : '☾'}</button>
+            <button className="talk-button" onClick={() => goTo('Contact')}>Let’s talk <Arrow /></button>
+            <button className="menu-button" onClick={() => setMenuOpen((value) => !value)} aria-label="Toggle navigation">{menuOpen ? '×' : '☰'}</button>
+          </div>
         </div>
-        {menu && <div className="mx-auto mt-2 max-w-6xl rounded-2xl border border-line bg-panel p-3 shadow-glass md:hidden">{['Home','About','Experience','Education','Skills','Projects','Contact'].map(x => <a onClick={()=>setMenu(false)} key={x} href={'#'+x.toLowerCase()} className="block rounded-xl px-4 py-3 text-sm font-semibold hover:bg-soft">{x}</a>)}</div>}
+        {menuOpen && <div className="mobile-menu">{navItems.map((item) => <button key={item} onClick={() => goTo(item)}>{item}<Arrow /></button>)}</div>}
       </header>
 
       <main>
-        <section id="home" className="mx-auto grid min-h-screen max-w-6xl items-center gap-12 px-5 pb-20 pt-32 lg:grid-cols-[1.05fr_.95fr] lg:pt-28">
-          <div className="reveal">
-            <span className="eyebrow"><span className="pulse-dot" /> Available for opportunities</span>
-            <p className="mt-7 text-sm font-semibold text-muted">Hi, I’m</p>
-            <h1 className="hero-title">AsmiT<br/><span className="gradient-text">Mishra.</span></h1>
-            <p className="mt-6 max-w-xl text-lg leading-8 text-muted sm:text-xl">Full-Stack Developer & AI Enthusiast. I build intelligent, scalable and impactful digital solutions that turn real problems into useful products.</p>
-            <div className="mt-8 flex flex-wrap gap-3"><a className="btn-primary" href="#projects">Explore My Work →</a><a className="btn-secondary" href="./cv.html">Download CV ↓</a></div>
-            <div className="mt-7 flex gap-3"><a className="social" href="https://github.com/yourasmit15-web" aria-label="GitHub">GH</a><a className="social" href="https://www.linkedin.com/in/asmitxmishra" aria-label="LinkedIn">in</a><a className="social" href="https://www.instagram.com/asmitx.dev" aria-label="Instagram">◎</a><a className="social" href="mailto:yourasmit108@gmail.com" aria-label="Email">@</a></div>
+        <section id="home" className="hero section-pad">
+          <div className="hero-copy reveal is-visible">
+            <div className="status"><span className="status-dot" /> Open to opportunities & interesting builds</div>
+            <p className="kicker">HELLO, I’M</p>
+            <h1>AsmiT<br /><span>Mishra<span className="accent">.</span></span></h1>
+            <p className="hero-lead">Full-Stack Developer & AI Enthusiast building useful products, expressive interfaces, and intelligent experiences.</p>
+            <div className="hero-actions">
+              <button className="button button-primary" onClick={() => goTo('Projects')}>Explore my work <Arrow /></button>
+              <a className="button button-ghost" href="./cv.html">View CV <span aria-hidden="true">↓</span></a>
+            </div>
+            <div className="social-row">
+              <a href={PROFILE.github} target="_blank" rel="noreferrer" aria-label="GitHub">GH</a>
+              <a href={PROFILE.linkedin} target="_blank" rel="noreferrer" aria-label="LinkedIn">in</a>
+              <a href={PROFILE.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">◎</a>
+              <a href={`mailto:${PROFILE.email}`} aria-label="Email">@</a>
+            </div>
           </div>
-          <div className="relative mx-auto w-full max-w-[520px] reveal delay-1">
-            <div className="orbit orbit-one"/><div className="orbit orbit-two"/>
-            <div className="hero-photo"><img src={profileImage} alt="AsmiT Mishra" /></div>
-            <div className="float-badge badge-react">⚛ React</div><div className="float-badge badge-ai">✦ AI / ML</div><div className="float-badge badge-node">⬡ Node.js</div><div className="float-badge badge-build">BUILD<br/><b>SHIP</b><br/>REPEAT</div>
+
+          <div className="hero-art reveal is-visible" aria-label="Profile illustration">
+            <div className="sun-ring ring-a" /><div className="sun-ring ring-b" />
+            <div className="portrait-frame"><img src={PROFILE.image} alt="AsmiT Mishra" /></div>
+            <div className="sticker sticker-react"><Mark>✦</Mark> React</div>
+            <div className="sticker sticker-ai"><Mark>AI</Mark> AI / ML</div>
+            <div className="sticker sticker-node"><Mark>ND</Mark> Node.js</div>
+            <div className="build-sticker">BUILD<br /><b>SHIP</b><br />REPEAT</div>
+            <div className="spark spark-one">✦</div><div className="spark spark-two">+</div>
           </div>
         </section>
 
-        <div className="ticker"><div>BUILD • LEARN • SHIP • REPEAT • BUILD • LEARN • SHIP • REPEAT • </div></div>
+        <div className="marquee" aria-hidden="true"><div>BUILD • LEARN • SHIP • REPEAT • BUILD • LEARN • SHIP • REPEAT • </div></div>
 
-        <section id="about" className="section-shell"><div className="section-label">01 / ABOUT ME</div><div className="grid gap-10 lg:grid-cols-2 lg:items-center"><div><h2 className="section-title">Hey, glad you<br/><span>made it here 👋</span></h2><div className="space-y-5 text-muted leading-7"><p>I’m a developer who enjoys getting hands-on with software, AI, interfaces, and ideas that solve real problems.</p><p>Most of what I know comes from building, breaking, fixing, experimenting, and shipping. I’m still learning, still building, and always looking for the next interesting thing to make.</p></div></div><div className="code-card"><div className="code-dots"><i/><i/><i/></div><pre><span>const</span> asmit = {'{'}
-  name: <b>"AsmiT Mishra"</b>,
-  role: <b>"Full-Stack Developer"</b>,
-  focus: <b>"AI + Web"</b>,
-  location: <b>"India"</b>,
-  mindset: <b>"Build. Learn. Repeat."</b>
-{'}'}</pre></div></div></section>
+        <section id="about" className="section-pad section-grid reveal">
+          <div className="section-index">01 / ABOUT</div>
+          <div className="section-content two-col">
+            <div><p className="eyebrow">A little about me</p><h2>Curious mind.<br /><span>Builder energy.</span></h2><p className="body-copy">I enjoy getting hands-on with software, AI, interfaces, and ideas that solve real problems. Most of what I know comes from building, breaking, fixing, experimenting, and shipping.</p><p className="body-copy">I’m still learning, still building, and always looking for the next interesting thing to make.</p></div>
+            <div className="code-window"><div className="window-top"><span /><span /><span /><small>asmit.config.js</small></div><pre><code><i>const</i> asmit = {'{'}{`\n`}  name: <b>"AsmiT Mishra"</b>,{`\n`}  role: <b>"Full-Stack Developer"</b>,{`\n`}  focus: <b>"AI + Web"</b>,{`\n`}  location: <b>"India"</b>,{`\n`}  mindset: <b>"Build. Learn. Repeat."</b>{`\n`}{'}'}</code></pre></div>
+          </div>
+        </section>
 
-        <section id="experience" className="section-shell"><div className="section-label">02 / EXPERIENCE</div><div className="grid gap-5 md:grid-cols-2"><article className="timeline-card"><span className="date">JAN — APR 2026</span><h3>Full-Stack Developer Intern</h3><p className="text-violet font-semibold">Hivdes (Just Inc.)</p><p className="text-muted">Built and maintained web experiences, enhanced existing features, fixed issues, and worked across the product stack.</p></article><article className="timeline-card"><span className="date">ONGOING</span><h3>Independent Builder</h3><p className="text-violet font-semibold">AI • Web • Creative Tech</p><p className="text-muted">Building projects, experimenting with AI workflows, and turning ideas into responsive digital products.</p></article></div></section>
+        <section id="experience" className="section-pad section-grid reveal">
+          <div className="section-index">02 / EXPERIENCE</div>
+          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Where I’ve been</p><h2>Work that<br /><span>taught me.</span></h2></div></div><div className="experience-list">
+            <article className="experience-card"><span className="year">2026</span><div><p className="role">Full-Stack Developer Intern</p><p className="company">Hivens (Just Inc.)</p><p className="body-copy">Built and maintained web experiences, improved product features, fixed issues, and worked across the stack.</p></div><span className="card-arrow">↗</span></article>
+            <article className="experience-card"><span className="year">NOW</span><div><p className="role">Independent Builder</p><p className="company">AI · Web · Creative Tech</p><p className="body-copy">Building personal products, experimenting with AI workflows, and turning ideas into responsive digital experiences.</p></div><span className="card-arrow">↗</span></article>
+          </div></div>
+        </section>
 
-        <section id="education" className="section-shell"><div className="section-label">03 / EDUCATION</div><div className="grid gap-4 md:grid-cols-2">{[['B.Tech / CSE','Nitte Meenakshi Institute of Technology','2025 — Present'],['Diploma — Programming & Data Science','IIT Madras','2023 — 2025'],['Pre-University','St. Aloysius College','2020 — 2022'],['Secondary School','Aditya Birla Public School','2010 — 2020']].map(([degree,school,year])=><article key={school} className="edu-card"><span>{year}</span><h3>{degree}</h3><p>{school}</p></article>)}</div></section>
+        <section id="education" className="section-pad section-grid reveal">
+          <div className="section-index">03 / EDUCATION</div>
+          <div className="section-content"><p className="eyebrow">Learning by doing</p><h2>Always <span>curious.</span></h2><div className="education-grid">
+            <article><span>2024 — 2027</span><h3>BCA</h3><p>Meena Shah Institute of Technology and Management</p></article>
+            <article><span>2022 — 2024</span><h3>12th — PCM</h3><p>Senior secondary education</p></article>
+          </div></div>
+        </section>
 
-        <section id="skills" className="section-shell"><div className="section-label">04 / SKILL STACK</div><div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><h2 className="section-title">Tools I use to<br/><span>build things.</span></h2><p className="max-w-md text-muted">A practical stack for modern, scalable web applications and AI-powered experiments.</p></div><div className="mt-8 flex flex-wrap gap-3">{skills.map((skill,i)=><span className="skill-pill" key={skill} style={{'--i':i}}><span>{['⚛','N','TS','JS','⬡','🐍','◉','PG','≈','◆','◫','✦'][i]}</span>{skill}</span>)}</div></section>
+        <section id="skills" className="section-pad section-grid reveal">
+          <div className="section-index">04 / SKILLS</div>
+          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">My toolkit</p><h2>Things I use to<br /><span>make ideas real.</span></h2></div><p className="body-copy narrow">A practical stack for modern web applications, product interfaces, and AI-powered experiments.</p></div><div className="skills-grid">{skills.map(([name, code], index) => <div className="skill-card" key={name} style={{ '--delay': `${index * 35}ms` }}><Mark>{code}</Mark><span>{name}</span><b>↗</b></div>)}</div></div>
+        </section>
 
-        <section id="projects" className="section-shell"><div className="section-label">05 / PROJECTS</div><div className="flex flex-col justify-between gap-5 md:flex-row md:items-end"><div><h2 className="section-title">Things I’ve<br/><span>built.</span></h2></div><div className="filter-row">{['All','Web','AI / ML'].map(f=><button key={f} onClick={()=>setActiveFilter(f)} className={activeFilter===f?'filter active':'filter'}>{f}</button>)}</div></div><div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{filtered.map((p,i)=><article className="project-card" key={p.title}><div className="project-visual"><span>0{i+1}</span><strong>{p.title.slice(0,1)}</strong><small>{p.type}</small></div><div className="p-6"><div className="mb-3 flex items-center justify-between"><h3 className="text-lg font-black">{p.title}</h3><span className="project-type">{p.type}</span></div><p className="min-h-14 text-sm leading-6 text-muted">{p.text}</p><div className="mt-5 flex flex-wrap gap-2">{p.tags.map(t=><span className="tag" key={t}>{t}</span>)}</div><a className="project-link" href={p.href} target="_blank" rel="noreferrer">View Project →</a></div></article>)}</div></section>
+        <section id="projects" className="section-pad section-grid reveal">
+          <div className="section-index">05 / PROJECTS</div>
+          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Selected builds</p><h2>Made with<br /><span>purpose.</span></h2></div><div className="filters">{['All', 'Web', 'AI'].map((item) => <button key={item} onClick={() => setFilter(item)} className={filter === item ? 'filter active' : 'filter'}>{item}</button>)}</div></div><div className="project-grid">{filteredProjects.map((project) => <article className="project-card" key={project.title}><div className="project-art"><span>{project.number}</span><b>{project.title.slice(0, 1)}</b><small>{project.type} PROJECT</small><i>✦</i></div><div className="project-info"><div className="project-title"><h3>{project.title}</h3><span>{project.type}</span></div><p>{project.description}</p><div className="tags">{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><a href={project.href} target="_blank" rel="noreferrer">View project <Arrow /></a></div></article>)}</div></div>
+        </section>
 
-        <section id="contact" className="section-shell pb-24"><div className="contact-panel"><div><div className="section-label">06 / CONTACT</div><h2 className="section-title">Let’s build something<br/><span>amazing together.</span></h2><p className="mt-5 max-w-lg text-muted leading-7">Have an idea, a role, or a project worth exploring? Send me a message and let’s talk.</p><div className="mt-8 space-y-3 text-sm"><a className="contact-link" href="mailto:yourasmit108@gmail.com">✉ yourasmit108@gmail.com</a><a className="contact-link" href="https://github.com/yourasmit15-web">⌘ github.com/yourasmit15-web</a><a className="contact-link" href="https://www.linkedin.com/in/asmitxmishra">in linkedin.com/in/asmitxmishra</a></div></div><form className="form-card" action="https://formsubmit.co/yourasmit108@gmail.com" method="POST"><input type="hidden" name="_subject" value="New portfolio message — AsmiT Mishra"/><input type="hidden" name="_captcha" value="false"/><input type="hidden" name="_template" value="table"/><input type="hidden" name="_next" value="https://yourasmit15-web.github.io/AsmiT_portfolio/#contact"/><div className="grid gap-3 sm:grid-cols-2"><input required name="name" placeholder="Your name"/><input required type="email" name="email" placeholder="Your email"/></div><textarea required name="message" rows="6" placeholder="Tell me about your idea..."/><button className="btn-primary w-full" type="submit">Send Message ↗</button></form></div></section>
+        <section id="contact" className="section-pad section-grid reveal contact-section">
+          <div className="section-index">06 / CONTACT</div>
+          <div className="section-content"><div className="contact-box"><div className="contact-copy"><p className="eyebrow">Have a project in mind?</p><h2>Let’s make<br /><span>something good.</span></h2><p className="body-copy">Whether it’s a product, an experiment, or an opportunity to collaborate — I’d love to hear about it.</p><div className="contact-links"><a href={`mailto:${PROFILE.email}`}>✉ {PROFILE.email}</a><a href={PROFILE.github} target="_blank" rel="noreferrer">⌘ github.com/yourasmit15-web</a><a href={PROFILE.linkedin} target="_blank" rel="noreferrer">in linkedin.com/in/asmitxmishra</a></div></div><form className="contact-form" action="https://formsubmit.co/yourasmit108@gmail.com" method="POST"><input type="hidden" name="_subject" value="New portfolio message — AsmiT Mishra" /><input type="hidden" name="_captcha" value="false" /><input type="hidden" name="_template" value="table" /><input type="hidden" name="_next" value="https://asmit-portfolio-asmitmishra.vercel.app/#contact" /><label>Name<input name="name" required autoComplete="name" placeholder="Your name" /></label><label>Email<input name="email" type="email" required autoComplete="email" placeholder="you@example.com" /></label><label>Message<textarea name="message" required rows="5" placeholder="Tell me about your idea..." /></label><button className="button button-primary" type="submit">Send message <Arrow /></button></form></div></div>
+        </section>
       </main>
-      <footer className="border-t border-line px-5 py-8"><div className="mx-auto flex max-w-6xl flex-col gap-3 text-sm text-muted sm:flex-row sm:items-center sm:justify-between"><span>© 2026 AsmiT Mishra. All rights reserved.</span><span>Designed & built with ♥ and lots of ☕</span></div></footer>
+
+      <footer className="footer"><div><strong>AsmiT<span className="accent">.</span></strong><span>Full-Stack Developer × AI Enthusiast</span></div><p>© 2026 AsmiT Mishra · Built with React, Vite & Tailwind CSS.</p></footer>
     </div>
   )
 }
