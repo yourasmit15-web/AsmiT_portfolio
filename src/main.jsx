@@ -14,12 +14,14 @@ const PROFILE = {
 const navItems = ['Home', 'About', 'Education', 'Skills', 'Projects', 'Contact']
 
 const projects = [
-  { title: 'RAGHUVIR', type: 'AI', number: '01', description: 'An AI assistant focused on productivity, research, multi-device control, browser automation, and permission-aware workflows.', stack: ['Python', 'FastAPI', 'Docker'], href: PROFILE.github },
-  { title: 'DHUN', type: 'Web', number: '02', description: 'A Spotify-inspired music experience for discovering, listening to, and sharing favorite tracks with a clean modern interface.', stack: ['React', 'Node.js', 'MongoDB'], href: PROFILE.github },
-  { title: 'TROVE', type: 'Web', number: '03', description: 'A modern digital resource and content management experience built around a focused, responsive product interface.', stack: ['Next.js', 'TypeScript', 'Tailwind'], href: 'https://github.com/yourasmit15-web/TROVE' },
-  { title: 'REALSENSE', type: 'Web', number: '04', description: 'A browser interaction experiment exploring user behavior, useful signals, and actionable insights.', stack: ['JavaScript', 'Extension', 'UX'], href: PROFILE.github },
-  { title: 'YOUTUBE TRIMMER', type: 'Web', number: '05', description: 'A focused utility experiment for simple, precise video trimming workflows directly in the browser.', stack: ['React', 'Media', 'Web'], href: PROFILE.github },
-  { title: 'MEDINFOAI', type: 'AI', number: '06', description: 'An AI/ML experiment exploring image-based information workflows and practical computer-vision ideas.', stack: ['Python', 'AI/ML', 'Vision'], href: PROFILE.github },
+  { title: 'DHUN', type: 'Web', number: '01', description: 'A Spotify-like music app built as a responsive discovery and listening experience, without a subscription flow.', stack: ['JavaScript', 'Web', 'Music'], href: 'https://github.com/yourasmit15-web/DHUN', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/DHUN' },
+  { title: 'TROVE', type: 'Web', number: '02', description: 'A minimal, responsive music-discovery interface built with React and Vite, including search, filters, and player interactions.', stack: ['React', 'Vite', 'JavaScript'], href: 'https://github.com/yourasmit15-web/TROVE', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/TROVE' },
+  { title: 'JARVIS AI ASSISTANT', type: 'AI', number: '03', description: 'An AI assistant project from my GitHub focused on building a personal assistant experience.', stack: ['AI', 'Python', 'Assistant'], href: 'https://github.com/yourasmit15-web/jarvis-ai-assistant', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/jarvis-ai-assistant' },
+  { title: 'COFFEE AI AGENT', type: 'AI', number: '04', description: 'An AI-agent project exploring practical agent workflows and conversational automation.', stack: ['AI', 'Agents', 'Python'], href: 'https://github.com/yourasmit15-web/coffee-ai-agent', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/coffee-ai-agent' },
+  { title: 'LEAD-FINDER', type: 'Web', number: '05', description: 'A lead-finding project built to explore structured prospecting and useful business data workflows.', stack: ['Web', 'Data', 'Automation'], href: 'https://github.com/yourasmit15-web/lead-finder', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/lead-finder' },
+  { title: 'JUDGEGAUGE', type: 'Web', number: '06', description: 'A GitHub project focused on building a practical evaluation and judging experience.', stack: ['Web', 'JavaScript', 'UI'], href: 'https://github.com/yourasmit15-web/JudgeGauge', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/JudgeGauge' },
+  { title: 'GITHUB CONSTELLATION', type: 'Web', number: '07', description: 'A project exploring GitHub data and visual presentation of repository information.', stack: ['GitHub', 'Web', 'Data'], href: 'https://github.com/yourasmit15-web/github-constellation', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/github-constellation' },
+  { title: 'AGENT-ME', type: 'AI', number: '08', description: 'An AI-agent project exploring personal agent concepts and interactive workflows.', stack: ['AI', 'Agents', 'Web'], href: 'https://github.com/yourasmit15-web/agent-me', image: 'https://opengraph.githubassets.com/1/yourasmit15-web/agent-me' },
 ]
 
 const skills = [
@@ -147,7 +149,7 @@ function App() {
 
         <section id="projects" className="section-pad section-grid reveal">
           <div className="section-index">04 / PROJECTS</div>
-          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Selected builds</p><h2>Made with<br /><span>purpose.</span></h2></div><div className="filters">{['All', 'Web', 'AI'].map((item) => <button key={item} onClick={() => setFilter(item)} className={filter === item ? 'filter active' : 'filter'}>{item}</button>)}</div></div><div className="project-grid">{filteredProjects.map((project) => <article className="project-card" key={project.title}><div className="project-art"><span>{project.number}</span><b>{project.title.slice(0, 1)}</b><small>{project.type} PROJECT</small><i>✦</i></div><div className="project-info"><div className="project-title"><h3>{project.title}</h3><span>{project.type}</span></div><p>{project.description}</p><div className="tags">{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><a href={project.href} target="_blank" rel="noreferrer">View project <Arrow /></a></div></article>)}</div></div>
+          <div className="section-content"><div className="section-heading-row"><div><p className="eyebrow">Real GitHub projects</p><h2>Built, pushed,<br /><span>and public.</span></h2></div><div className="filters">{['All', 'Web', 'AI'].map((item) => <button key={item} onClick={() => setFilter(item)} className={filter === item ? 'filter active' : 'filter'}>{item}</button>)}</div></div><div className="project-grid">{filteredProjects.map((project) => <article className="project-card" key={project.title}><div className="project-art" style={{ backgroundImage: `url(${project.image})` }}><span>{project.number}</span><b>{project.title.slice(0, 1)}</b><small>{project.type} PROJECT</small><i>✦</i></div><div className="project-info"><div className="project-title"><h3>{project.title}</h3><span>{project.type}</span></div><p>{project.description}</p><div className="tags">{project.stack.map((tag) => <span key={tag}>{tag}</span>)}</div><a href={project.href} target="_blank" rel="noreferrer">View on GitHub <Arrow /></a></div></article>)}</div></div>
         </section>
 
         <section id="contact" className="section-pad section-grid reveal contact-section">
@@ -156,7 +158,7 @@ function App() {
         </section>
       </main>
 
-      <footer className="footer"><div><strong>AsmiT<span className="accent">.</span></strong><span>Full-Stack Developer × AI Enthusiast</span></div><p>© 2026 AsmiT Mishra · Built with React, Vite & Tailwind CSS.</p></footer>
+      <footer className="footer"><div><strong>AsmiT<span className="accent">.</span></strong><span>Full-Stack Developer × AI Enthusiast</span></div><p>© 2026 AsmiT Mishra · Built with React, Vite & Tailwind CSS.</p></div>
     </div>
   )
 }
