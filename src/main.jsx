@@ -8,7 +8,7 @@ const PROFILE = {
   github: 'https://github.com/yourasmit15-web',
   linkedin: 'https://www.linkedin.com/in/asmitxmishra',
   instagram: 'https://www.instagram.com/asmitx.dev',
-  image: '/profile-photo.png',
+  image: './profile-photo.png',
 }
 
 const navItems = ['Home', 'About', 'Education', 'Skills', 'Projects', 'Contact']
