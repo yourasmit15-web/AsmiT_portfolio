@@ -33,7 +33,7 @@ jobs:
         run: npm run build
 
       - name: Verify build output
-        run: test -f dist/index.html && test -f dist/profile.svg
+        run: test -f dist/index.html && test -f dist/profile-photo.png
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
